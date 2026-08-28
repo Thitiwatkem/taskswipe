@@ -10,7 +10,7 @@ import { NavBar, type ViewKey } from "@/components/NavBar";
 import { Layers } from "lucide-react";
 
 const VIEW_TITLES: Record<ViewKey, string> = {
-  swipe: "TaskSwipe",
+  swipe: "Undue",
   calendar: "Calendar",
   archive: "Archive",
   import: "Import tasks",

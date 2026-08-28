@@ -10,7 +10,7 @@ export function Onboarding({ onStart }: { onStart: () => void }) {
         </div>
 
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold text-ink">TaskSwipe</h1>
+          <h1 className="text-2xl font-bold text-ink">Undue</h1>
           <p className="text-balance text-base leading-snug text-slate-600">
             Swipe through your BruinLearn assignments and email to-dos in seconds — built for
             Anderson students juggling too many dashboards.

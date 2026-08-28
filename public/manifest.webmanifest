@@ -1,6 +1,6 @@
 {
-  "name": "TaskSwipe",
-  "short_name": "TaskSwipe",
+  "name": "Undue",
+  "short_name": "Undue",
   "description": "Swipe-based task triage for UCLA Anderson MBA students.",
   "start_url": ".",
   "scope": ".",

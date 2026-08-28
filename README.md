@@ -1,4 +1,4 @@
-# TaskSwipe
+# Undue
 
 A swipe-based task triage tool for UCLA Anderson MBA students. Swipe right to mark a task done, swipe left to keep it active and set a reminder.
 
