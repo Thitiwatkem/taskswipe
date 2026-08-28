@@ -12,6 +12,7 @@ import {
   Info,
   KeyRound,
   Link2,
+  Mail,
   PenLine,
   Sparkles,
   Upload,
@@ -51,6 +52,13 @@ export function ImportView({ onImportTasks, onAddManualTask }: ImportViewProps) 
   const [manualDue, setManualDue] = useState("");
   const [manualDescription, setManualDescription] = useState("");
   const [manualLink, setManualLink] = useState("");
+  const [outlookNote, setOutlookNote] = useState<string | null>(null);
+
+  function handleConnectOutlook() {
+    setOutlookNote(
+      "Live Outlook sync needs a Microsoft OAuth app registration, which UCLA's Microsoft 365 tenant currently blocks students from creating (confirmed while building this). For now, bring email tasks in via the .csv/.ics import or paste-in below.",
+    );
+  }
 
   async function handleConnectBruinLearn() {
     if (!bruinToken.trim()) return;
@@ -193,6 +201,25 @@ export function ImportView({ onImportTasks, onAddManualTask }: ImportViewProps) 
         {bruinError && <p className="mt-2 text-xs font-medium text-rose-600">{bruinError}</p>}
       </section>
 
+      <section className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+        <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700">
+          <Mail className="h-4 w-4" />
+          Connect Outlook
+          <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+            Coming soon
+          </span>
+        </div>
+        <p className="mb-3 text-xs text-slate-500">
+          Sign in with Microsoft to sync email to-dos live, no manual export. This is the planned
+          next-version flow — tap below to see the real blocker we hit trying to ship it now.
+        </p>
+        <Button onClick={handleConnectOutlook} variant="outline" className="w-full">
+          <Mail className="h-4 w-4" />
+          Connect with Microsoft
+        </Button>
+        {outlookNote && <p className="mt-2 text-xs font-medium text-slate-600">{outlookNote}</p>}
+      </section>
+
       <section className="rounded-2xl border border-ucla-blue/30 bg-ucla-blue/5 p-4">
         <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-ucla-blue-dark">
           <CalendarPlus className="h-4 w-4" />
@@ -328,8 +355,9 @@ export function ImportView({ onImportTasks, onAddManualTask }: ImportViewProps) 
       <div className="flex items-start gap-2 rounded-2xl bg-slate-100 p-3 text-xs text-slate-500">
         <Info className="mt-0.5 h-4 w-4 shrink-0" />
         <p>
-          Direct BruinLearn sync is above (token-based, untested against a live account). Outlook
-          live sync is still planned for the next version — for now, use the .csv/.ics import.
+          BruinLearn direct-connect is real (token-based, untested against a live account yet).
+          Outlook OAuth is blocked by UCLA's Microsoft 365 tenant policy for now — the .csv/.ics
+          import and paste-in below are the reliable path for email tasks in the meantime.
         </p>
       </div>
     </div>
