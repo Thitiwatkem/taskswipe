@@ -14,6 +14,7 @@ interface ImportViewProps {
     courseOrSender: string;
     dueDate: string | null;
     description: string;
+    link: string | null;
   }) => void;
 }
 
@@ -34,6 +35,7 @@ export function ImportView({ onImportTasks, onAddManualTask }: ImportViewProps) 
   const [manualCourse, setManualCourse] = useState("");
   const [manualDue, setManualDue] = useState("");
   const [manualDescription, setManualDescription] = useState("");
+  const [manualLink, setManualLink] = useState("");
 
   async function handleIcsFile(file: File) {
     setIcsError(null);
@@ -110,11 +112,13 @@ export function ImportView({ onImportTasks, onAddManualTask }: ImportViewProps) 
       courseOrSender: manualCourse.trim(),
       dueDate: manualDue ? new Date(manualDue).toISOString() : null,
       description: manualDescription.trim(),
+      link: manualLink.trim() || null,
     });
     setManualTitle("");
     setManualCourse("");
     setManualDue("");
     setManualDescription("");
+    setManualLink("");
   }
 
   return (
@@ -212,6 +216,13 @@ export function ImportView({ onImportTasks, onAddManualTask }: ImportViewProps) 
             placeholder="Notes (optional)"
             rows={2}
             className="w-full resize-none rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-ucla-blue focus:outline-none"
+          />
+          <input
+            type="url"
+            value={manualLink}
+            onChange={(e) => setManualLink(e.target.value)}
+            placeholder="Link (optional)"
+            className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-ucla-blue focus:outline-none"
           />
           <Button type="submit" variant="subtle" className="w-full">
             Add task

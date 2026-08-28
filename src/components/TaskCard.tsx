@@ -131,7 +131,7 @@ export const TaskCard = forwardRef<TaskCardHandle, TaskCardProps>(
                   onPointerDown={(e) => e.stopPropagation()}
                   className="mt-3 inline-flex w-fit items-center gap-1 text-xs font-semibold text-ucla-blue hover:underline"
                 >
-                  Open in BruinLearn
+                  Open link
                   <ExternalLink className="h-3 w-3" />
                 </a>
               )}

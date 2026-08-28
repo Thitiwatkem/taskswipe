@@ -67,7 +67,7 @@ export function DetailScreen({ task, onSetReminder, onBack }: DetailScreenProps)
           rel="noopener noreferrer"
           className="mt-1 inline-flex w-fit items-center gap-1 text-xs font-semibold text-ucla-blue hover:underline"
         >
-          Open in BruinLearn
+          Open link
           <ExternalLink className="h-3 w-3" />
         </a>
       )}

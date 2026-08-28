@@ -66,7 +66,13 @@ export function useTaskStore() {
   );
 
   const addManualTask = useCallback(
-    (input: { title: string; courseOrSender: string; dueDate: string | null; description: string }) => {
+    (input: {
+      title: string;
+      courseOrSender: string;
+      dueDate: string | null;
+      description: string;
+      link?: string | null;
+    }) => {
       const task: Task = {
         id: makeId("manual"),
         title: input.title,
@@ -77,6 +83,7 @@ export function useTaskStore() {
         status: "active",
         reminderAt: computeAutoReminder({ source: "manual", dueDate: input.dueDate }, settings),
         createdAt: new Date().toISOString(),
+        link: input.link ?? null,
       };
       setTasks((prev) => [task, ...prev]);
       return task;
