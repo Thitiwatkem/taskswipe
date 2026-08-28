@@ -13,7 +13,7 @@ const NAV_ITEMS: { key: ViewKey; label: string; Icon: typeof Layers }[] = [
 
 export function NavBar({ active, onChange }: { active: ViewKey; onChange: (key: ViewKey) => void }) {
   return (
-    <nav className="flex items-center justify-around border-t border-slate-200 bg-white/90 px-1 py-2 backdrop-blur">
+    <nav className="flex items-center justify-around border-t border-slate-200 bg-white/90 px-1 pt-2 backdrop-blur [padding-bottom:max(0.5rem,env(safe-area-inset-bottom))]">
       {NAV_ITEMS.map(({ key, label, Icon }) => {
         const isActive = key === active;
         return (

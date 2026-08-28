@@ -26,7 +26,7 @@ function App() {
   return (
     <div className="flex h-dvh w-full items-center justify-center bg-slate-100 p-0 sm:p-6">
       <div className="flex h-full max-h-[880px] w-full max-w-md flex-col overflow-hidden bg-white sm:rounded-[2.5rem] sm:border sm:border-slate-200 sm:shadow-2xl">
-        <header className="flex items-center gap-2 border-b border-slate-100 px-5 py-3">
+        <header className="flex items-center gap-2 border-b border-slate-100 px-5 pb-3 [padding-top:max(0.75rem,env(safe-area-inset-top))]">
           <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-ucla-blue text-ucla-gold">
             <Layers className="h-4 w-4" />
           </div>
