@@ -4,6 +4,7 @@ import { SourceBadge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDueDate } from "@/lib/reminders";
 import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import { AiSummaryToggle } from "@/components/AiSummaryToggle";
 import { cn } from "@/lib/utils";
 
 const WEEKDAY_LABELS = ["S", "M", "T", "W", "T", "F", "S"];
@@ -127,6 +128,7 @@ export function CalendarView({ tasks }: { tasks: Task[] }) {
                       <ExternalLink className="h-3 w-3" />
                     </a>
                   )}
+                  <AiSummaryToggle task={task} />
                 </div>
               ))}
             </div>

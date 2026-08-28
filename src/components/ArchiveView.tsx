@@ -1,6 +1,7 @@
 import type { Task } from "@/lib/types";
 import { SourceBadge } from "@/components/ui/badge";
 import { Archive, ExternalLink, RotateCcw } from "lucide-react";
+import { AiSummaryToggle } from "@/components/AiSummaryToggle";
 
 interface ArchiveViewProps {
   tasks: Task[];
@@ -45,6 +46,7 @@ export function ArchiveView({ tasks, onRestore }: ArchiveViewProps) {
                 <ExternalLink className="h-3 w-3" />
               </a>
             )}
+            <AiSummaryToggle task={task} />
             <div className="mt-1 flex items-center justify-between">
               <p className="text-xs text-slate-500">{task.courseOrSender}</p>
               <button
