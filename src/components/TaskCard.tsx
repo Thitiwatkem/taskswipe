@@ -84,7 +84,7 @@ export const TaskCard = forwardRef<TaskCardHandle, TaskCardProps>(
         transition={{ type: "spring", stiffness: 300, damping: 28 }}
       >
         <motion.div
-          className="flex h-full w-full flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-xl"
+          className="flex h-full w-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-xl"
           style={isTop ? { x, rotate } : undefined}
           drag={isTop ? "x" : false}
           dragElastic={0.9}
@@ -105,44 +105,44 @@ export const TaskCard = forwardRef<TaskCardHandle, TaskCardProps>(
               >
                 Keep
               </motion.div>
+
+              <div className="mb-3">
+                <SourceBadge source={task.source} />
+              </div>
+
+              <p className="text-sm font-medium text-ucla-blue-dark">{task.courseOrSender}</p>
+              <h2 className="mt-1 text-2xl font-bold leading-tight text-ink">{task.title}</h2>
+
+              <p className={`mt-3 text-sm font-semibold ${urgencyClass(task.dueDate)}`}>
+                {formatDueDate(task.dueDate)}
+              </p>
+
+              {task.description && (
+                <p className="mt-4 line-clamp-6 text-sm leading-relaxed text-slate-600">
+                  {task.description}
+                </p>
+              )}
+
+              {task.link && (
+                <a
+                  href={task.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onPointerDown={(e) => e.stopPropagation()}
+                  className="mt-3 inline-flex w-fit items-center gap-1 text-xs font-semibold text-ucla-blue hover:underline"
+                >
+                  Open in BruinLearn
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              )}
+
+              <div className="mt-auto flex items-center justify-center gap-3 pt-6 text-xs text-slate-400">
+                <X className="h-3.5 w-3.5" /> keep &amp; remind
+                <span className="mx-1">·</span>
+                done <Check className="h-3.5 w-3.5" />
+              </div>
             </>
           )}
-
-          <div className="mb-3">
-            <SourceBadge source={task.source} />
-          </div>
-
-          <p className="text-sm font-medium text-ucla-blue-dark">{task.courseOrSender}</p>
-          <h2 className="mt-1 text-2xl font-bold leading-tight text-ink">{task.title}</h2>
-
-          <p className={`mt-3 text-sm font-semibold ${urgencyClass(task.dueDate)}`}>
-            {formatDueDate(task.dueDate)}
-          </p>
-
-          {task.description && (
-            <p className="mt-4 line-clamp-6 text-sm leading-relaxed text-slate-600">
-              {task.description}
-            </p>
-          )}
-
-          {task.link && (
-            <a
-              href={task.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              onPointerDown={(e) => e.stopPropagation()}
-              className="mt-3 inline-flex w-fit items-center gap-1 text-xs font-semibold text-ucla-blue hover:underline"
-            >
-              Open in BruinLearn
-              <ExternalLink className="h-3 w-3" />
-            </a>
-          )}
-
-          <div className="mt-auto flex items-center justify-center gap-3 pt-6 text-xs text-slate-400">
-            <X className="h-3.5 w-3.5" /> keep &amp; remind
-            <span className="mx-1">·</span>
-            done <Check className="h-3.5 w-3.5" />
-          </div>
         </motion.div>
       </motion.div>
     );
