@@ -1,6 +1,6 @@
 import type { Task } from "@/lib/types";
 import { SourceBadge } from "@/components/ui/badge";
-import { Archive, RotateCcw } from "lucide-react";
+import { Archive, ExternalLink, RotateCcw } from "lucide-react";
 
 interface ArchiveViewProps {
   tasks: Task[];
@@ -34,6 +34,17 @@ export function ArchiveView({ tasks, onRestore }: ArchiveViewProps) {
             <p className="text-sm font-semibold text-ink line-through decoration-slate-300">
               {task.title}
             </p>
+            {task.link && (
+              <a
+                href={task.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-ucla-blue hover:underline"
+              >
+                Open link
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            )}
             <div className="mt-1 flex items-center justify-between">
               <p className="text-xs text-slate-500">{task.courseOrSender}</p>
               <button

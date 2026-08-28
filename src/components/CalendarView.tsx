@@ -3,7 +3,7 @@ import type { Task } from "@/lib/types";
 import { SourceBadge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDueDate } from "@/lib/reminders";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const WEEKDAY_LABELS = ["S", "M", "T", "W", "T", "F", "S"];
@@ -116,6 +116,17 @@ export function CalendarView({ tasks }: { tasks: Task[] }) {
                   </div>
                   <p className="text-sm font-semibold text-ink">{task.title}</p>
                   <p className="text-xs text-slate-500">{task.courseOrSender}</p>
+                  {task.link && (
+                    <a
+                      href={task.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-ucla-blue hover:underline"
+                    >
+                      Open link
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  )}
                 </div>
               ))}
             </div>
