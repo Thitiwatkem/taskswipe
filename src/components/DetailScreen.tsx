@@ -16,7 +16,13 @@ interface DetailScreenProps {
 
 export function DetailScreen({ task, onSetReminder, onBack }: DetailScreenProps) {
   const [summary, setSummary] = useState<string | null>(null);
-  const [selectedMinutes, setSelectedMinutes] = useState<number | null>(null);
+  const [selectedMinutes, setSelectedMinutes] = useState<number | null>(() => {
+    if (!task.dueDate || !task.reminderAt) return null;
+    const match = QUICK_REMINDER_OPTIONS.find(
+      (option) => reminderTimeFor(task.dueDate!, option.minutesBefore) === task.reminderAt,
+    );
+    return match?.minutesBefore ?? null;
+  });
   const [customValue, setCustomValue] = useState("");
 
   useEffect(() => {

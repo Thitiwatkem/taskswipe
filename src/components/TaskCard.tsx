@@ -3,21 +3,25 @@ import { motion, useAnimation, useMotionValue, useTransform, type PanInfo } from
 import type { Task } from "@/lib/types";
 import { SourceBadge } from "@/components/ui/badge";
 import { formatDueDate } from "@/lib/reminders";
-import { Check, ExternalLink, X } from "lucide-react";
+import { Check, ChevronUp, ExternalLink, X } from "lucide-react";
+
+export type SwipeDirection = "left" | "right" | "up";
 
 export interface TaskCardHandle {
   swipeRight: () => void;
   swipeLeft: () => void;
+  swipeUp: () => void;
 }
 
 interface TaskCardProps {
   task: Task;
   stackPosition: number;
   isTop: boolean;
-  onDecided: (direction: "left" | "right") => void;
+  onDecided: (direction: SwipeDirection) => void;
 }
 
-const SWIPE_THRESHOLD = 110;
+const SWIPE_THRESHOLD_X = 110;
+const SWIPE_THRESHOLD_Y = 100;
 const VELOCITY_THRESHOLD = 500;
 
 function urgencyClass(dueDate: string | null): string {
@@ -32,18 +36,25 @@ export const TaskCard = forwardRef<TaskCardHandle, TaskCardProps>(
   ({ task, stackPosition, isTop, onDecided }, ref) => {
     const controls = useAnimation();
     const x = useMotionValue(0);
+    const y = useMotionValue(0);
     const rotate = useTransform(x, [-300, 0, 300], [-18, 0, 18]);
     const rightStampOpacity = useTransform(x, [20, 120], [0, 1]);
     const leftStampOpacity = useTransform(x, [-120, -20], [1, 0]);
+    const upStampOpacity = useTransform(y, [-120, -20], [1, 0]);
     const [isFlinging, setIsFlinging] = useState(false);
 
-    function fling(direction: "left" | "right") {
+    function fling(direction: SwipeDirection) {
       if (isFlinging) return;
       setIsFlinging(true);
       const FLING_DURATION_MS = 320;
+      const target =
+        direction === "right"
+          ? { x: 700, y: 0, rotate: 30 }
+          : direction === "left"
+            ? { x: -700, y: 0, rotate: -30 }
+            : { x: 0, y: -700, rotate: 0 };
       controls.start({
-        x: direction === "right" ? 700 : -700,
-        rotate: direction === "right" ? 30 : -30,
+        ...target,
         opacity: 0,
         transition: { duration: FLING_DURATION_MS / 1000, ease: "easeOut" },
       });
@@ -56,15 +67,28 @@ export const TaskCard = forwardRef<TaskCardHandle, TaskCardProps>(
     useImperativeHandle(ref, () => ({
       swipeRight: () => fling("right"),
       swipeLeft: () => fling("left"),
+      swipeUp: () => fling("up"),
     }));
 
     function handleDragEnd(_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) {
-      if (info.offset.x > SWIPE_THRESHOLD || info.velocity.x > VELOCITY_THRESHOLD) {
+      const isVerticalDrag = Math.abs(info.offset.y) > Math.abs(info.offset.x);
+
+      if (
+        isVerticalDrag &&
+        (info.offset.y < -SWIPE_THRESHOLD_Y || info.velocity.y < -VELOCITY_THRESHOLD)
+      ) {
+        fling("up");
+      } else if (info.offset.x > SWIPE_THRESHOLD_X || info.velocity.x > VELOCITY_THRESHOLD) {
         fling("right");
-      } else if (info.offset.x < -SWIPE_THRESHOLD || info.velocity.x < -VELOCITY_THRESHOLD) {
+      } else if (info.offset.x < -SWIPE_THRESHOLD_X || info.velocity.x < -VELOCITY_THRESHOLD) {
         fling("left");
       } else {
-        controls.start({ x: 0, rotate: 0, transition: { type: "spring", stiffness: 420, damping: 32 } });
+        controls.start({
+          x: 0,
+          y: 0,
+          rotate: 0,
+          transition: { type: "spring", stiffness: 420, damping: 32 },
+        });
       }
     }
 
@@ -85,8 +109,8 @@ export const TaskCard = forwardRef<TaskCardHandle, TaskCardProps>(
       >
         <motion.div
           className="flex h-full w-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-xl"
-          style={isTop ? { x, rotate } : undefined}
-          drag={isTop ? "x" : false}
+          style={isTop ? { x, y, rotate } : undefined}
+          drag={isTop}
           dragElastic={0.9}
           onDragEnd={isTop ? handleDragEnd : undefined}
           animate={controls}
@@ -104,6 +128,12 @@ export const TaskCard = forwardRef<TaskCardHandle, TaskCardProps>(
                 className="pointer-events-none absolute left-6 top-6 -rotate-12 rounded-lg border-4 border-rose-500 px-3 py-1 text-xl font-extrabold uppercase tracking-wide text-rose-500"
               >
                 Keep
+              </motion.div>
+              <motion.div
+                style={{ opacity: upStampOpacity }}
+                className="pointer-events-none absolute left-1/2 top-6 -translate-x-1/2 rounded-lg border-4 border-ucla-blue px-3 py-1 text-xl font-extrabold uppercase tracking-wide text-ucla-blue"
+              >
+                Details
               </motion.div>
 
               <div className="mb-3">
@@ -136,9 +166,11 @@ export const TaskCard = forwardRef<TaskCardHandle, TaskCardProps>(
                 </a>
               )}
 
-              <div className="mt-auto flex items-center justify-center gap-3 pt-6 text-xs text-slate-400">
-                <X className="h-3.5 w-3.5" /> keep &amp; remind
-                <span className="mx-1">·</span>
+              <div className="mt-auto flex items-center justify-center gap-2.5 pt-6 text-xs text-slate-400">
+                <X className="h-3.5 w-3.5" /> keep
+                <span className="mx-0.5">·</span>
+                <ChevronUp className="h-3.5 w-3.5" /> details
+                <span className="mx-0.5">·</span>
                 done <Check className="h-3.5 w-3.5" />
               </div>
             </>

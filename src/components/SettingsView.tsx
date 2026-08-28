@@ -59,9 +59,24 @@ export function SettingsView({ settings, onUpdate }: SettingsViewProps) {
           ))}
         </select>
         <p className="mt-2 text-xs text-slate-400">
-          Applied automatically to new tasks from enabled sources — you can always override the
-          reminder for an individual task when you swipe left on it.
+          Applied automatically to new tasks from enabled sources.
         </p>
+      </div>
+
+      <div className="mt-6">
+        <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3">
+          <div className="pr-3 text-sm font-medium text-ink">
+            Auto-apply default reminder on swipe left
+            <p className="mt-0.5 text-xs font-normal text-slate-400">
+              Keep a task active with a quick swipe and it gets the default reminder above
+              automatically — swipe up instead to customize it.
+            </p>
+          </div>
+          <Switch
+            checked={settings.autoApplyDefaultOnSwipeLeft}
+            onCheckedChange={(v) => onUpdate({ autoApplyDefaultOnSwipeLeft: v })}
+          />
+        </div>
       </div>
     </div>
   );

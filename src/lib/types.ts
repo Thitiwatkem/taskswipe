@@ -20,6 +20,7 @@ export interface NotificationSettings {
   emailEnabled: boolean;
   manualEnabled: boolean;
   defaultLeadMinutes: number;
+  autoApplyDefaultOnSwipeLeft: boolean;
 }
 
 export const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
@@ -27,4 +28,5 @@ export const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
   emailEnabled: true,
   manualEnabled: false,
   defaultLeadMinutes: 60,
+  autoApplyDefaultOnSwipeLeft: true,
 };

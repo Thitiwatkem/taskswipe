@@ -12,9 +12,13 @@ const ONBOARDED_KEY = "hasOnboarded";
 
 export function useTaskStore() {
   const [tasks, setTasks] = useState<Task[]>(() => loadFromStorage<Task[]>(TASKS_KEY, []));
-  const [settings, setSettings] = useState<NotificationSettings>(() =>
-    loadFromStorage(SETTINGS_KEY, DEFAULT_NOTIFICATION_SETTINGS),
-  );
+  const [settings, setSettings] = useState<NotificationSettings>(() => ({
+    // Merge over the defaults so fields added after a user's first visit
+    // (like autoApplyDefaultOnSwipeLeft) don't silently come back as
+    // undefined for settings saved by an older version of the app.
+    ...DEFAULT_NOTIFICATION_SETTINGS,
+    ...loadFromStorage(SETTINGS_KEY, DEFAULT_NOTIFICATION_SETTINGS),
+  }));
   const [hasOnboarded, setHasOnboarded] = useState<boolean>(() =>
     loadFromStorage(ONBOARDED_KEY, false),
   );

@@ -2,16 +2,17 @@ import { useMemo, useRef, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import type { Task } from "@/lib/types";
 import type { TaskStore } from "@/store/useTaskStore";
-import { TaskCard, type TaskCardHandle } from "@/components/TaskCard";
+import { TaskCard, type TaskCardHandle, type SwipeDirection } from "@/components/TaskCard";
 import { DetailScreen } from "@/components/DetailScreen";
 import { EmptyState } from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
-import { Check, X } from "lucide-react";
+import { computeAutoReminder } from "@/lib/reminders";
+import { Check, ChevronUp, X } from "lucide-react";
 
 const VISIBLE_CARDS = 3;
 
 export function SwipeStack({ store }: { store: TaskStore }) {
-  const { activeTasks, tasks, markDone, setReminder, sessionArchivedCount } = store;
+  const { activeTasks, tasks, settings, markDone, setReminder, sessionArchivedCount } = store;
   const [triagedIds, setTriagedIds] = useState<Set<string>>(new Set());
   const [detailTaskId, setDetailTaskId] = useState<string | null>(null);
   const topCardRef = useRef<TaskCardHandle>(null);
@@ -26,10 +27,29 @@ export function SwipeStack({ store }: { store: TaskStore }) {
     ? tasks.find((t) => t.id === detailTaskId)
     : undefined;
 
-  function handleDecided(task: Task, direction: "left" | "right") {
+  function handleDecided(task: Task, direction: SwipeDirection) {
     setTriagedIds((prev) => new Set(prev).add(task.id));
+
     if (direction === "right") {
       markDone(task.id);
+      return;
+    }
+
+    if (direction === "up") {
+      setDetailTaskId(task.id);
+      return;
+    }
+
+    // Plain "keep" swipe. With the setting on, silently apply the default
+    // reminder (if one isn't already set) instead of opening the detail
+    // screen — that's reserved for the swipe-up gesture. With it off, fall
+    // back to the original behavior of opening the detail screen here too,
+    // so a manual reminder can still be picked.
+    if (settings.autoApplyDefaultOnSwipeLeft) {
+      if (!task.reminderAt) {
+        const auto = computeAutoReminder(task, settings);
+        if (auto) setReminder(task.id, auto);
+      }
     } else {
       setDetailTaskId(task.id);
     }
@@ -69,15 +89,24 @@ export function SwipeStack({ store }: { store: TaskStore }) {
         ))}
       </div>
 
-      <div className="mt-5 flex items-center justify-center gap-6">
+      <div className="mt-5 flex items-center justify-center gap-5">
         <Button
           variant="outline"
           size="icon"
           className="h-16 w-16 border-2 border-rose-200 text-rose-500 hover:bg-rose-50"
           onClick={() => topCardRef.current?.swipeLeft()}
-          aria-label="Keep active and set reminder"
+          aria-label="Keep active"
         >
           <X className="h-7 w-7" />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          className="h-12 w-12 border-2 border-ucla-blue/30 text-ucla-blue hover:bg-ucla-blue/10"
+          onClick={() => topCardRef.current?.swipeUp()}
+          aria-label="Open details and set a custom reminder"
+        >
+          <ChevronUp className="h-5 w-5" />
         </Button>
         <Button
           variant="outline"
