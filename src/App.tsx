@@ -40,7 +40,9 @@ function App() {
             <>
               {view === "swipe" && <SwipeStack store={store} />}
               {view === "calendar" && <CalendarView tasks={store.activeTasks} />}
-              {view === "archive" && <ArchiveView tasks={store.doneTasks} />}
+              {view === "archive" && (
+                <ArchiveView tasks={store.doneTasks} onRestore={store.restoreTask} />
+              )}
               {view === "import" && (
                 <ImportView
                   onImportTasks={store.importTasks}

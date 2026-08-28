@@ -1,8 +1,13 @@
 import type { Task } from "@/lib/types";
 import { SourceBadge } from "@/components/ui/badge";
-import { Archive } from "lucide-react";
+import { Archive, RotateCcw } from "lucide-react";
 
-export function ArchiveView({ tasks }: { tasks: Task[] }) {
+interface ArchiveViewProps {
+  tasks: Task[];
+  onRestore: (id: string) => void;
+}
+
+export function ArchiveView({ tasks, onRestore }: ArchiveViewProps) {
   if (tasks.length === 0) {
     return (
       <div className="flex h-full flex-col items-center justify-center text-center text-slate-400">
@@ -29,7 +34,16 @@ export function ArchiveView({ tasks }: { tasks: Task[] }) {
             <p className="text-sm font-semibold text-ink line-through decoration-slate-300">
               {task.title}
             </p>
-            <p className="text-xs text-slate-500">{task.courseOrSender}</p>
+            <div className="mt-1 flex items-center justify-between">
+              <p className="text-xs text-slate-500">{task.courseOrSender}</p>
+              <button
+                onClick={() => onRestore(task.id)}
+                className="flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium text-ucla-blue hover:bg-ucla-blue/10"
+              >
+                <RotateCcw className="h-3 w-3" />
+                Reissue
+              </button>
+            </div>
           </div>
         ))}
       </div>
