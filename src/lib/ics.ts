@@ -1,5 +1,6 @@
 import type { Task } from "./types";
 import { makeId } from "./utils";
+import { categorizeTask } from "./category";
 
 interface ParsedEvent {
   summary: string;
@@ -124,6 +125,7 @@ export function parseIcsToTasks(icsText: string): IcsParseResult {
             reminderAt: null,
             createdAt: new Date().toISOString(),
             link: parsed.url,
+            category: categorizeTask({ title, description: parsed.description }),
           });
         } else {
           skippedCount += 1;

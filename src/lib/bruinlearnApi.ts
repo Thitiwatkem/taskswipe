@@ -1,5 +1,6 @@
 import type { Task } from "./types";
 import { makeId } from "./utils";
+import { categorizeTask } from "./category";
 
 const BRUINLEARN_API_URL = "https://taskswipe-api.vercel.app/api/bruinlearn";
 
@@ -46,6 +47,7 @@ export async function connectBruinLearn(token: string): Promise<BruinLearnConnec
     reminderAt: null,
     createdAt: new Date().toISOString(),
     link: item.link,
+    category: categorizeTask({ title: item.title, description: item.description }),
   }));
 
   return { tasks };

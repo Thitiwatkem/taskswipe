@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import type { Task } from "@/lib/types";
-import { SourceBadge } from "@/components/ui/badge";
+import { SourceBadge, CategoryBadge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDueDate } from "@/lib/reminders";
 import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
@@ -112,7 +112,10 @@ export function CalendarView({ tasks }: { tasks: Task[] }) {
               {selectedTasks.map((task) => (
                 <div key={task.id} className="rounded-xl border border-slate-200 p-3">
                   <div className="mb-1 flex items-center justify-between">
-                    <SourceBadge source={task.source} />
+                    <div className="flex items-center gap-1.5">
+                      <SourceBadge source={task.source} />
+                      <CategoryBadge category={task.category} />
+                    </div>
                     <span className="text-xs text-slate-400">{formatDueDate(task.dueDate)}</span>
                   </div>
                   <p className="text-sm font-semibold text-ink">{task.title}</p>

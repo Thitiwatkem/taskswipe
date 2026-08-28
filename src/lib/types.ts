@@ -1,3 +1,5 @@
+import type { TaskCategory } from "./category";
+
 export type TaskSource = "bruinlearn" | "email" | "manual";
 export type TaskStatus = "active" | "done";
 
@@ -13,6 +15,7 @@ export interface Task {
   createdAt: string;
   doneAt?: string | null;
   link?: string | null;
+  category: TaskCategory;
 }
 
 export interface NotificationSettings {

@@ -5,13 +5,20 @@ import { generateSeedTasks } from "@/lib/seed";
 import { loadFromStorage, saveToStorage } from "@/lib/storage";
 import { makeId } from "@/lib/utils";
 import { computeAutoReminder } from "@/lib/reminders";
+import { categorizeTask, type TaskCategory } from "@/lib/category";
 
 const TASKS_KEY = "tasks";
 const SETTINGS_KEY = "settings";
 const ONBOARDED_KEY = "hasOnboarded";
 
 export function useTaskStore() {
-  const [tasks, setTasks] = useState<Task[]>(() => loadFromStorage<Task[]>(TASKS_KEY, []));
+  const [tasks, setTasks] = useState<Task[]>(() =>
+    // Backfill category for tasks persisted before this field existed —
+    // otherwise CATEGORY_META lookups would break on old saved data.
+    loadFromStorage<Task[]>(TASKS_KEY, []).map((t) =>
+      t.category ? t : { ...t, category: categorizeTask(t) },
+    ),
+  );
   const [settings, setSettings] = useState<NotificationSettings>(() => ({
     // Merge over the defaults so fields added after a user's first visit
     // (like autoApplyDefaultOnSwipeLeft) don't silently come back as
@@ -76,6 +83,7 @@ export function useTaskStore() {
       dueDate: string | null;
       description: string;
       link?: string | null;
+      category?: TaskCategory;
     }) => {
       const task: Task = {
         id: makeId("manual"),
@@ -88,6 +96,7 @@ export function useTaskStore() {
         reminderAt: computeAutoReminder({ source: "manual", dueDate: input.dueDate }, settings),
         createdAt: new Date().toISOString(),
         link: input.link ?? null,
+        category: input.category ?? categorizeTask({ title: input.title, description: input.description }),
       };
       setTasks((prev) => [task, ...prev]);
       return task;

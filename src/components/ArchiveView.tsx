@@ -1,5 +1,5 @@
 import type { Task } from "@/lib/types";
-import { SourceBadge } from "@/components/ui/badge";
+import { SourceBadge, CategoryBadge } from "@/components/ui/badge";
 import { Archive, ExternalLink, RotateCcw } from "lucide-react";
 import { AiSummaryToggle } from "@/components/AiSummaryToggle";
 
@@ -25,7 +25,10 @@ export function ArchiveView({ tasks, onRestore }: ArchiveViewProps) {
         {tasks.map((task) => (
           <div key={task.id} className="rounded-xl border border-slate-200 bg-white p-3 opacity-80">
             <div className="mb-1 flex items-center justify-between">
-              <SourceBadge source={task.source} />
+              <div className="flex items-center gap-1.5">
+                <SourceBadge source={task.source} />
+                <CategoryBadge category={task.category} />
+              </div>
               {task.doneAt && (
                 <span className="text-xs text-slate-400">
                   Done {new Date(task.doneAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}

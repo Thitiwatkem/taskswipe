@@ -1,7 +1,9 @@
 import type { Task, TaskSource } from "./types";
 import { makeId } from "./utils";
+import { categorizeTask, CATEGORY_META, type TaskCategory } from "./category";
 
 const VALID_SOURCES: TaskSource[] = ["bruinlearn", "email", "manual"];
+const VALID_CATEGORIES = Object.keys(CATEGORY_META) as TaskCategory[];
 
 function parseCsvRows(text: string): string[][] {
   const rows: string[][] = [];
@@ -74,6 +76,7 @@ export function parseCsvToTasks(csvText: string): CsvParseResult {
   const descriptionCol = findColumn(header, ["description", "notes", "note"]);
   const linkCol = findColumn(header, ["link", "url"]);
   const sourceCol = findColumn(header, ["source"]);
+  const categoryCol = findColumn(header, ["category"]);
 
   if (titleCol === -1) return { tasks: [], skippedCount: rows.length };
 
@@ -97,17 +100,26 @@ export function parseCsvToTasks(csvText: string): CsvParseResult {
     const rawSource = (sourceCol !== -1 ? row[sourceCol]?.trim().toLowerCase() : "") as TaskSource;
     const source: TaskSource = VALID_SOURCES.includes(rawSource) ? rawSource : "bruinlearn";
 
+    const description = (descriptionCol !== -1 ? row[descriptionCol]?.trim() : "") || "";
+    const rawCategory = (
+      categoryCol !== -1 ? row[categoryCol]?.trim().toLowerCase().replace(/\s+/g, "_") : ""
+    ) as TaskCategory;
+    const category: TaskCategory = VALID_CATEGORIES.includes(rawCategory)
+      ? rawCategory
+      : categorizeTask({ title, description });
+
     tasks.push({
       id: makeId("csv"),
       title,
       source,
       courseOrSender: (courseCol !== -1 ? row[courseCol]?.trim() : "") || "Imported task",
       dueDate,
-      description: (descriptionCol !== -1 ? row[descriptionCol]?.trim() : "") || "",
+      description,
       status: "active",
       reminderAt: null,
       createdAt: new Date().toISOString(),
       link: (linkCol !== -1 ? row[linkCol]?.trim() : "") || null,
+      category,
     });
   }
 

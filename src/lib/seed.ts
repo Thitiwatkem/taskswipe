@@ -1,4 +1,5 @@
 import type { Task, TaskSource } from "./types";
+import type { TaskCategory } from "./category";
 import { makeId } from "./utils";
 
 interface SeedSpec {
@@ -8,6 +9,7 @@ interface SeedSpec {
   dueDate: string | null;
   description: string;
   link: string | null;
+  category: TaskCategory;
 }
 
 // Real tasks scraped from BruinLearn on 2026-08-28 — every open assignment
@@ -19,6 +21,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-08-31T23:59:00",
     description: "100 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/234429/assignments/2008351",
+    category: "assignment",
   },
   {
     title: "Check-in 4",
@@ -26,6 +29,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-09-03T23:59:00",
     description: "Quiz, 10 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/234429/assignments/2012317",
+    category: "studying",
   },
   {
     title: "Group problem set 3",
@@ -33,6 +37,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-09-10T23:59:00",
     description: "100 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/234429/assignments/2008349",
+    category: "assignment",
   },
   {
     title: "Final Exam",
@@ -40,6 +45,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-09-11T09:00:00",
     description: "100 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/234429/assignments/2008350",
+    category: "exam",
   },
   {
     title: "Learning Team Peer Evaluation",
@@ -47,6 +53,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-09-18T23:55:00",
     description: "3 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/234429/assignments/2008355",
+    category: "group_project",
   },
   {
     title: "Individual Case Write-Up #2: Natureview",
@@ -54,6 +61,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-09-03T09:00:00",
     description: "5 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/234432/assignments/2005965",
+    category: "assignment",
   },
   {
     title: "Major Group Project",
@@ -61,6 +69,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-09-10T23:59:00",
     description: "24 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/234432/assignments/2005966",
+    category: "group_project",
   },
   {
     title: "Discussion Contributions",
@@ -68,6 +77,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: null,
     description: "Ongoing, 15 pts possible, no fixed due date",
     link: "https://bruinlearn.ucla.edu/courses/234426/assignments/2006742",
+    category: "assignment",
   },
   {
     title: "Build-A-Thon: Parker-Easton Project Submission Deadline",
@@ -75,6 +85,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-08-31T08:00:00",
     description: "100 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/240009/assignments/2005502",
+    category: "group_project",
   },
   {
     title: "Participation",
@@ -82,6 +93,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: null,
     description: "Ongoing, 100 pts possible, no fixed due date",
     link: "https://bruinlearn.ucla.edu/courses/240009/assignments/2005507",
+    category: "class",
   },
   {
     title: "L@A Premier Track Premortem",
@@ -89,6 +101,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-10-11T23:59:00",
     description: "100 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/233745/assignments/1982421",
+    category: "assignment",
   },
   {
     title: "L@A Premier Track Orientation Course",
@@ -96,6 +109,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-11-30T23:59:00",
     description: "100 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/233745/assignments/2003434",
+    category: "class",
   },
   {
     title: "L@A Premier Track Participation Policy",
@@ -103,6 +117,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-11-30T23:59:00",
     description: "Quiz, 100 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/233745/assignments/1975964",
+    category: "studying",
   },
   {
     title: "L@A Coaching Coach/Client Fit",
@@ -110,6 +125,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-11-30T23:59:00",
     description: "Quiz, 100 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/233745/assignments/1975969",
+    category: "studying",
   },
   {
     title: "L@A Coaching Agreement",
@@ -117,6 +133,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-11-30T23:59:00",
     description: "Quiz, 100 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/233745/assignments/1975971",
+    category: "studying",
   },
   {
     title: "TL-TR Progress Update #1 (2026-27 Fall)",
@@ -124,6 +141,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-12-13T23:59:00",
     description: "Quiz, 100 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/233745/assignments/2013918",
+    category: "studying",
   },
   {
     title: "Problem Set 1",
@@ -131,6 +149,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-09-25T23:59:00",
     description: "100 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/237882/assignments/2000674",
+    category: "assignment",
   },
   {
     title: "Problem Set 2",
@@ -138,6 +157,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-10-09T23:59:00",
     description: "100 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/237882/assignments/2000675",
+    category: "assignment",
   },
   {
     title: "Problem Set 3",
@@ -145,6 +165,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-11-06T23:59:00",
     description: "100 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/237882/assignments/2000676",
+    category: "assignment",
   },
   {
     title: "Problem Set 4",
@@ -152,6 +173,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-11-20T23:59:00",
     description: "100 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/237882/assignments/2000677",
+    category: "assignment",
   },
   {
     title: "Problem Set 5",
@@ -159,6 +181,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-12-04T23:59:00",
     description: "100 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/237882/assignments/2000678",
+    category: "assignment",
   },
   {
     title: "Assessment: Midterm",
@@ -166,6 +189,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: null,
     description: "100 pts possible, date TBD",
     link: "https://bruinlearn.ucla.edu/courses/237882/assignments/2000671",
+    category: "exam",
   },
   {
     title: "Assessment: Final Exam",
@@ -173,6 +197,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: null,
     description: "100 pts possible, date TBD",
     link: "https://bruinlearn.ucla.edu/courses/237882/assignments/2000670",
+    category: "exam",
   },
 ];
 
@@ -185,6 +210,7 @@ const EMAIL_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-09-02T23:59:00",
     description: "Submit your ACT team selection before the deadline.",
     link: null,
+    category: "career",
   },
   {
     title: "Submit Onboarding Feedback Survey",
@@ -193,6 +219,7 @@ const EMAIL_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     description:
       "Anonymous feedback survey on the first two weeks of Onboarding; entries submitted by the deadline are eligible for an Anderson-branded MiiR tumbler raffle.",
     link: null,
+    category: "assignment",
   },
   {
     title: "PIER Session 2",
@@ -200,6 +227,7 @@ const EMAIL_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-08-31T15:30:00",
     description: "Review the Session 1 slide deck beforehand.",
     link: null,
+    category: "class",
   },
   {
     title: "Welcome to Tech @ Anderson reception",
@@ -207,6 +235,7 @@ const EMAIL_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: "2026-08-28T17:00:00",
     description: "Welcome reception for FTMBA/EMBA/FEMBA classes, Crown Auditorium.",
     link: null,
+    category: "reception",
   },
   {
     title: "Pick up name tag/name tent",
@@ -214,6 +243,7 @@ const EMAIL_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: null,
     description: "Ready for pickup at the Student Business Center (D-212).",
     link: null,
+    category: "errand",
   },
   {
     title: "Schedule ITIN/W-7 Zoom appointment",
@@ -222,6 +252,7 @@ const EMAIL_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     description:
       "Reply with availability for a Zoom appointment: Wed 9/2 8-10am, Thu 9/3 8-9am, or Fri 9/4 8-10am. Complete your GLACIER record and send required documents at least 24 hours before the chosen slot.",
     link: null,
+    category: "appointment",
   },
   {
     title: "Pick up Anderson sweatshirt",
@@ -229,6 +260,7 @@ const EMAIL_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: null,
     description: "If missed at distribution, pick up at Student Affairs (G307), Mon-Fri 8am-5pm.",
     link: null,
+    category: "errand",
   },
   {
     title: "Apply for AVIP Impact Investing Program",
@@ -237,6 +269,7 @@ const EMAIL_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     description:
       "Optional student-led impact investing fund; eligible as a first-year FTMBA student. Application deadline 9/4 at 11:59pm.",
     link: null,
+    category: "career",
   },
   {
     title: "Pay Fall tuition & fee assessment",
@@ -245,6 +278,7 @@ const EMAIL_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     description:
       "Review your Fall fee assessment on Bruin Bill and submit payment. Missing the deadline drops your courses and places a hold on your account.",
     link: null,
+    category: "errand",
   },
   {
     title: "Sign up for a waiver exam (optional)",
@@ -253,6 +287,7 @@ const EMAIL_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     description:
       "If you want to waive MGMTFT 405 Managerial Economics (Tue 9/1, 5-6:30pm, D301) or MGMTFT 416 Global Economics (Fri 9/4, 4:30-6pm, B313), register via the sign-up link. Optional.",
     link: null,
+    category: "exam",
   },
   {
     title: "Book coffee chat with Prof. Hershfield",
@@ -260,6 +295,7 @@ const EMAIL_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     dueDate: null,
     description: "Optional office-hours coffee chat sign-up via Calendly.",
     link: null,
+    category: "appointment",
   },
   {
     title: "Resolve Check-in 2 access issue",
@@ -268,6 +304,7 @@ const EMAIL_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     description:
       "The TA reopened Check-in 2 after you missed it, but your follow-up asking for the Zoom passcode looks unanswered — confirm whether you actually completed it.",
     link: null,
+    category: "studying",
   },
   {
     title: "Upload resume v1 to Parker2028 folder",
@@ -276,6 +313,7 @@ const EMAIL_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     description:
       "Anderson-format resume, uploaded to your Parker2028 folder in the Parker Portal. You flagged this email yourself — worth double-checking it's actually done.",
     link: null,
+    category: "career",
   },
   {
     title: "Complete Advize Assignment",
@@ -284,6 +322,7 @@ const EMAIL_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     description:
       "Watch at least 3 Advizers (30+ minutes total) and answer the 4 questions on Advize. Was due the week of Aug 17.",
     link: null,
+    category: "career",
   },
   {
     title: "Complete Stage 1 on Launchpad",
@@ -292,6 +331,7 @@ const EMAIL_SEED_SPECS: Omit<SeedSpec, "source">[] = [
     description:
       "Upload your completed brief (or the Career Destination tab of the PCS Worksheet) to your Parker2028 folder — due before your PCS session, Mon 8/10 (Sections A/B) or Wed 8/12 (Sections C/D).",
     link: null,
+    category: "career",
   },
 ];
 
@@ -313,5 +353,6 @@ export function generateSeedTasks(): Task[] {
     reminderAt: null,
     createdAt: new Date(now - i * 1000).toISOString(),
     link: spec.link,
+    category: spec.category,
   }));
 }

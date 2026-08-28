@@ -3,6 +3,9 @@ import { motion, useAnimation, useMotionValue, useTransform, type PanInfo } from
 import type { Task } from "@/lib/types";
 import { SourceBadge } from "@/components/ui/badge";
 import { formatDueDate } from "@/lib/reminders";
+import { CATEGORY_META } from "@/lib/category";
+import { CATEGORY_ICONS } from "@/lib/categoryIcons";
+import { cn } from "@/lib/utils";
 import { Check, ChevronUp, ExternalLink, X } from "lucide-react";
 
 export type SwipeDirection = "left" | "right" | "up";
@@ -108,7 +111,7 @@ export const TaskCard = forwardRef<TaskCardHandle, TaskCardProps>(
         transition={{ type: "spring", stiffness: 300, damping: 28 }}
       >
         <motion.div
-          className="flex h-full w-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-xl"
+          className="flex h-full w-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl"
           style={isTop ? { x, y, rotate } : undefined}
           drag={isTop}
           dragElastic={0.9}
@@ -119,59 +122,63 @@ export const TaskCard = forwardRef<TaskCardHandle, TaskCardProps>(
             <>
               <motion.div
                 style={{ opacity: rightStampOpacity }}
-                className="pointer-events-none absolute right-6 top-6 rotate-12 rounded-lg border-4 border-emerald-500 px-3 py-1 text-xl font-extrabold uppercase tracking-wide text-emerald-500"
+                className="pointer-events-none absolute right-6 top-20 z-10 rotate-12 rounded-lg border-4 border-emerald-500 bg-white/90 px-3 py-1 text-xl font-extrabold uppercase tracking-wide text-emerald-500"
               >
                 Done
               </motion.div>
               <motion.div
                 style={{ opacity: leftStampOpacity }}
-                className="pointer-events-none absolute left-6 top-6 -rotate-12 rounded-lg border-4 border-rose-500 px-3 py-1 text-xl font-extrabold uppercase tracking-wide text-rose-500"
+                className="pointer-events-none absolute left-6 top-20 z-10 -rotate-12 rounded-lg border-4 border-rose-500 bg-white/90 px-3 py-1 text-xl font-extrabold uppercase tracking-wide text-rose-500"
               >
                 Keep
               </motion.div>
               <motion.div
                 style={{ opacity: upStampOpacity }}
-                className="pointer-events-none absolute left-1/2 top-6 -translate-x-1/2 rounded-lg border-4 border-ucla-blue px-3 py-1 text-xl font-extrabold uppercase tracking-wide text-ucla-blue"
+                className="pointer-events-none absolute left-1/2 top-20 z-10 -translate-x-1/2 rounded-lg border-4 border-ucla-blue bg-white/90 px-3 py-1 text-xl font-extrabold uppercase tracking-wide text-ucla-blue"
               >
                 Details
               </motion.div>
 
-              <div className="mb-3">
-                <SourceBadge source={task.source} />
-              </div>
+              <CategoryBanner category={task.category} />
 
-              <p className="text-sm font-medium text-ucla-blue-dark">{task.courseOrSender}</p>
-              <h2 className="mt-1 text-2xl font-bold leading-tight text-ink">{task.title}</h2>
+              <div className="flex flex-1 flex-col overflow-hidden p-6">
+                <div className="mb-3">
+                  <SourceBadge source={task.source} />
+                </div>
 
-              <p className={`mt-3 text-sm font-semibold ${urgencyClass(task.dueDate)}`}>
-                {formatDueDate(task.dueDate)}
-              </p>
+                <p className="text-sm font-medium text-ucla-blue-dark">{task.courseOrSender}</p>
+                <h2 className="mt-1 text-2xl font-bold leading-tight text-ink">{task.title}</h2>
 
-              {task.description && (
-                <p className="mt-4 line-clamp-6 text-sm leading-relaxed text-slate-600">
-                  {task.description}
+                <p className={`mt-3 text-sm font-semibold ${urgencyClass(task.dueDate)}`}>
+                  {formatDueDate(task.dueDate)}
                 </p>
-              )}
 
-              {task.link && (
-                <a
-                  href={task.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onPointerDown={(e) => e.stopPropagation()}
-                  className="mt-3 inline-flex w-fit items-center gap-1 text-xs font-semibold text-ucla-blue hover:underline"
-                >
-                  Open link
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              )}
+                {task.description && (
+                  <p className="mt-4 line-clamp-6 text-sm leading-relaxed text-slate-600">
+                    {task.description}
+                  </p>
+                )}
 
-              <div className="mt-auto flex items-center justify-center gap-2.5 pt-6 text-xs text-slate-400">
-                <X className="h-3.5 w-3.5" /> keep
-                <span className="mx-0.5">·</span>
-                <ChevronUp className="h-3.5 w-3.5" /> details
-                <span className="mx-0.5">·</span>
-                done <Check className="h-3.5 w-3.5" />
+                {task.link && (
+                  <a
+                    href={task.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    className="mt-3 inline-flex w-fit items-center gap-1 text-xs font-semibold text-ucla-blue hover:underline"
+                  >
+                    Open link
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                )}
+
+                <div className="mt-auto flex items-center justify-center gap-2.5 pt-6 text-xs text-slate-400">
+                  <X className="h-3.5 w-3.5" /> keep
+                  <span className="mx-0.5">·</span>
+                  <ChevronUp className="h-3.5 w-3.5" /> details
+                  <span className="mx-0.5">·</span>
+                  done <Check className="h-3.5 w-3.5" />
+                </div>
               </div>
             </>
           )}
@@ -181,3 +188,19 @@ export const TaskCard = forwardRef<TaskCardHandle, TaskCardProps>(
   },
 );
 TaskCard.displayName = "TaskCard";
+
+function CategoryBanner({ category }: { category: Task["category"] }) {
+  const meta = CATEGORY_META[category];
+  const Icon = CATEGORY_ICONS[category];
+  return (
+    <div
+      className={cn(
+        "flex h-14 shrink-0 items-center gap-2 bg-gradient-to-br px-6 text-white",
+        meta.gradient,
+      )}
+    >
+      <Icon className="h-4 w-4" />
+      <span className="text-xs font-semibold uppercase tracking-wide">{meta.label}</span>
+    </div>
+  );
+}

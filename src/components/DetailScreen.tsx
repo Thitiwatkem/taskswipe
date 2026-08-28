@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import type { Task } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { SourceBadge } from "@/components/ui/badge";
+import { SourceBadge, CategoryBadge } from "@/components/ui/badge";
 import { generateTaskSummary } from "@/lib/ai";
 import { QUICK_REMINDER_OPTIONS, formatDueDate, formatReminderAt, reminderTimeFor } from "@/lib/reminders";
 import { ArrowLeft, BellRing, ExternalLink, Sparkles } from "lucide-react";
@@ -57,7 +57,10 @@ export function DetailScreen({ task, onSetReminder, onBack }: DetailScreenProps)
       className="absolute inset-0 z-20 flex flex-col rounded-3xl bg-white p-6 shadow-2xl"
     >
       <div className="mb-4 flex items-center justify-between">
-        <SourceBadge source={task.source} />
+        <div className="flex items-center gap-1.5">
+          <SourceBadge source={task.source} />
+          <CategoryBadge category={task.category} />
+        </div>
         <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
           Kept active
         </span>

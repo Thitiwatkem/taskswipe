@@ -5,6 +5,7 @@ import { parseIcsToTasks } from "@/lib/ics";
 import { parseCsvToTasks } from "@/lib/csv";
 import { parsePastedTasks } from "@/lib/ai";
 import { connectBruinLearn } from "@/lib/bruinlearnApi";
+import { categorizeTask, CATEGORY_META, type TaskCategory } from "@/lib/category";
 import { makeId } from "@/lib/utils";
 import {
   CalendarPlus,
@@ -26,6 +27,7 @@ interface ImportViewProps {
     dueDate: string | null;
     description: string;
     link: string | null;
+    category?: TaskCategory;
   }) => void;
 }
 
@@ -52,6 +54,7 @@ export function ImportView({ onImportTasks, onAddManualTask }: ImportViewProps) 
   const [manualDue, setManualDue] = useState("");
   const [manualDescription, setManualDescription] = useState("");
   const [manualLink, setManualLink] = useState("");
+  const [manualCategory, setManualCategory] = useState<TaskCategory | "">("");
   const [outlookNote, setOutlookNote] = useState<string | null>(null);
 
   function handleConnectOutlook() {
@@ -138,6 +141,8 @@ export function ImportView({ onImportTasks, onAddManualTask }: ImportViewProps) 
         status: "active",
         reminderAt: null,
         createdAt: new Date().toISOString(),
+        link: null,
+        category: categorizeTask({ title: p.title, description: p.description }),
       }));
       onImportTasks(tasks);
       setPasteStatus(`Parsed ${tasks.length} task${tasks.length === 1 ? "" : "s"} from your paste.`);
@@ -156,12 +161,14 @@ export function ImportView({ onImportTasks, onAddManualTask }: ImportViewProps) 
       dueDate: manualDue ? new Date(manualDue).toISOString() : null,
       description: manualDescription.trim(),
       link: manualLink.trim() || null,
+      category: manualCategory || undefined,
     });
     setManualTitle("");
     setManualCourse("");
     setManualDue("");
     setManualDescription("");
     setManualLink("");
+    setManualCategory("");
   }
 
   return (
@@ -267,6 +274,18 @@ export function ImportView({ onImportTasks, onAddManualTask }: ImportViewProps) 
             placeholder="Link (optional)"
             className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-ucla-blue focus:outline-none"
           />
+          <select
+            value={manualCategory}
+            onChange={(e) => setManualCategory(e.target.value as TaskCategory | "")}
+            className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-ink focus:border-ucla-blue focus:outline-none"
+          >
+            <option value="">Category: auto-detect</option>
+            {Object.entries(CATEGORY_META).map(([key, meta]) => (
+              <option key={key} value={key}>
+                {meta.label}
+              </option>
+            ))}
+          </select>
           <Button type="submit" variant="subtle" className="w-full">
             Add task
           </Button>

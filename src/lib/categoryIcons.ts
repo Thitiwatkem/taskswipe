@@ -1,0 +1,35 @@
+import {
+  Briefcase,
+  BookOpen,
+  Calendar,
+  ClipboardCheck,
+  FileText,
+  GraduationCap,
+  Handshake,
+  Layers,
+  Package,
+  PartyPopper,
+  Plane,
+  Presentation,
+  Users,
+  Wine,
+  type LucideIcon,
+} from "lucide-react";
+import type { TaskCategory } from "./category";
+
+export const CATEGORY_ICONS: Record<TaskCategory, LucideIcon> = {
+  assignment: FileText,
+  class: Presentation,
+  reading: BookOpen,
+  studying: GraduationCap,
+  exam: ClipboardCheck,
+  group_project: Users,
+  career: Briefcase,
+  networking: Handshake,
+  party: PartyPopper,
+  reception: Wine,
+  errand: Package,
+  appointment: Calendar,
+  travel: Plane,
+  other: Layers,
+};
