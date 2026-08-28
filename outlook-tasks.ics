@@ -1,0 +1,75 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//TaskSwipe//Outlook Export//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:outlook-task-1@personal.local
+DTSTAMP:20260828T000000Z
+DTSTART:20260817T090000
+SUMMARY:Upload resume v1 to Parker2028 folder [Parker Career Management Center]
+DESCRIPTION:Anderson-format resume\, uploaded to your Parker2028 folder in the Parker Portal. You flagged this email yourself — worth double-checking it's actually done.
+END:VEVENT
+BEGIN:VEVENT
+UID:outlook-task-2@personal.local
+DTSTAMP:20260828T000000Z
+DTSTART:20260817T235900
+SUMMARY:Complete Advize Assignment [Parker Career Management Center]
+DESCRIPTION:Watch at least 3 Advizers (30+ minutes total) and answer the 4 questions on Advize. Was due the week of Aug 17.
+END:VEVENT
+BEGIN:VEVENT
+UID:outlook-task-3@personal.local
+DTSTAMP:20260828T000000Z
+DTSTART:20260810T090000
+SUMMARY:Complete Stage 1 on Launchpad [Parker Career Management Center]
+DESCRIPTION:Upload your completed brief (or the Career Destination tab of the PCS Worksheet) to your Parker2028 folder — due before your PCS session\, Mon 8/10 (Sections A/B) or Wed 8/12 (Sections C/D).
+END:VEVENT
+BEGIN:VEVENT
+UID:outlook-task-4@personal.local
+DTSTAMP:20260828T000000Z
+DTSTART:20260828T170000
+SUMMARY:Welcome to Tech @ Anderson reception [Easton Technology Management Center]
+DESCRIPTION:Welcome reception for FTMBA/EMBA/FEMBA classes\, Crown Auditorium.
+END:VEVENT
+BEGIN:VEVENT
+UID:outlook-task-5@personal.local
+DTSTAMP:20260828T000000Z
+DTSTART:20260831T153000
+SUMMARY:PIER Session 2 [Ercole, Chrissy (PIER)]
+DESCRIPTION:Review the Session 1 slide deck beforehand.
+END:VEVENT
+BEGIN:VEVENT
+UID:outlook-task-6@personal.local
+DTSTAMP:20260828T000000Z
+DTSTART:20260901T170000
+SUMMARY:Sign up for a waiver exam (optional) [MBA Student Affairs]
+DESCRIPTION:If you want to waive MGMTFT 405 Managerial Economics (Tue 9/1\, 5-6:30pm\, D301) or MGMTFT 416 Global Economics (Fri 9/4\, 4:30-6pm\, B313)\, register via the sign-up link. Optional.
+END:VEVENT
+BEGIN:VEVENT
+UID:outlook-task-7@personal.local
+DTSTAMP:20260828T000000Z
+DTSTART:20260902T235900
+SUMMARY:ACT Team Selection Survey [Parker Career Management Center]
+DESCRIPTION:Submit your ACT team selection before the deadline.
+END:VEVENT
+BEGIN:VEVENT
+UID:outlook-task-8@personal.local
+DTSTAMP:20260828T000000Z
+DTSTART:20260904T235900
+SUMMARY:Apply for AVIP Impact Investing Program [UCLA Anderson Center for Impact]
+DESCRIPTION:Optional student-led impact investing fund; eligible as a first-year FTMBA student. Application deadline 9/4 at 11:59pm.
+END:VEVENT
+BEGIN:VEVENT
+UID:outlook-task-9@personal.local
+DTSTAMP:20260828T000000Z
+DTSTART:20260907T235900
+SUMMARY:Submit Onboarding Feedback Survey [MBA Student Affairs]
+DESCRIPTION:Anonymous feedback survey on the first two weeks of Onboarding; entries submitted by the deadline are eligible for an Anderson-branded MiiR tumbler raffle.
+END:VEVENT
+BEGIN:VEVENT
+UID:outlook-task-10@personal.local
+DTSTAMP:20260828T000000Z
+DTSTART:20260911T235900
+SUMMARY:Pay Fall tuition & fee assessment [MBA Student Affairs / Bruin Bill]
+DESCRIPTION:Review your Fall fee assessment on Bruin Bill and submit payment. Missing the deadline drops your courses and places a hold on your account.
+END:VEVENT
+END:VCALENDAR

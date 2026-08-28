@@ -1,0 +1,157 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//TaskSwipe//BruinLearn Export//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:2008351@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20260831T235900
+SUMMARY:Group Problem Set 2 [262-MGMTFT-403-LEC-3 Financial Accounting]
+DESCRIPTION:100 pts possible
+URL:https://bruinlearn.ucla.edu/courses/234429/assignments/2008351
+END:VEVENT
+BEGIN:VEVENT
+UID:2012317@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20260903T235900
+SUMMARY:Check-in 4 [262-MGMTFT-403-LEC-3 Financial Accounting]
+DESCRIPTION:Quiz\, 10 pts possible
+URL:https://bruinlearn.ucla.edu/courses/234429/assignments/2012317
+END:VEVENT
+BEGIN:VEVENT
+UID:2008349@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20260910T235900
+SUMMARY:Group problem set 3 [262-MGMTFT-403-LEC-3 Financial Accounting]
+DESCRIPTION:100 pts possible
+URL:https://bruinlearn.ucla.edu/courses/234429/assignments/2008349
+END:VEVENT
+BEGIN:VEVENT
+UID:2008350@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20260911T090000
+SUMMARY:Final Exam [262-MGMTFT-403-LEC-3 Financial Accounting]
+DESCRIPTION:100 pts possible
+URL:https://bruinlearn.ucla.edu/courses/234429/assignments/2008350
+END:VEVENT
+BEGIN:VEVENT
+UID:2008355@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20260918T235500
+SUMMARY:Learning Team Peer Evaluation [262-MGMTFT-403-LEC-3 Financial Accounting]
+DESCRIPTION:3 pts possible
+URL:https://bruinlearn.ucla.edu/courses/234429/assignments/2008355
+END:VEVENT
+BEGIN:VEVENT
+UID:2005965@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20260903T090000
+SUMMARY:Individual Case Write-Up #2: Natureview [262-MGMTFT-411-01/02 Marketing Management]
+DESCRIPTION:5 pts possible
+URL:https://bruinlearn.ucla.edu/courses/234432/assignments/2005965
+END:VEVENT
+BEGIN:VEVENT
+UID:2005966@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20260910T235900
+SUMMARY:Major Group Project [262-MGMTFT-411-01/02 Marketing Management]
+DESCRIPTION:24 pts possible
+URL:https://bruinlearn.ucla.edu/courses/234432/assignments/2005966
+END:VEVENT
+BEGIN:VEVENT
+UID:2005502@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20260831T080000
+SUMMARY:Build-A-Thon: Parker-Easton Project Submission Deadline [Summer Technology Immersion 2026]
+DESCRIPTION:100 pts possible
+URL:https://bruinlearn.ucla.edu/courses/240009/assignments/2005502
+END:VEVENT
+BEGIN:VEVENT
+UID:1982421@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20261011T235900
+SUMMARY:L@A Premier Track Premortem [Leadership@Anderson - Cohort 8]
+DESCRIPTION:100 pts possible
+URL:https://bruinlearn.ucla.edu/courses/233745/assignments/1982421
+END:VEVENT
+BEGIN:VEVENT
+UID:2003434@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20261130T235900
+SUMMARY:L@A Premier Track Orientation Course [Leadership@Anderson - Cohort 8]
+DESCRIPTION:100 pts possible
+URL:https://bruinlearn.ucla.edu/courses/233745/assignments/2003434
+END:VEVENT
+BEGIN:VEVENT
+UID:1975964@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20261130T235900
+SUMMARY:L@A Premier Track Participation Policy [Leadership@Anderson - Cohort 8]
+DESCRIPTION:Quiz\, 100 pts possible
+URL:https://bruinlearn.ucla.edu/courses/233745/assignments/1975964
+END:VEVENT
+BEGIN:VEVENT
+UID:1975969@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20261130T235900
+SUMMARY:L@A Coaching Coach/Client Fit [Leadership@Anderson - Cohort 8]
+DESCRIPTION:Quiz\, 100 pts possible
+URL:https://bruinlearn.ucla.edu/courses/233745/assignments/1975969
+END:VEVENT
+BEGIN:VEVENT
+UID:1975971@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20261130T235900
+SUMMARY:L@A Coaching Agreement [Leadership@Anderson - Cohort 8]
+DESCRIPTION:Quiz\, 100 pts possible
+URL:https://bruinlearn.ucla.edu/courses/233745/assignments/1975971
+END:VEVENT
+BEGIN:VEVENT
+UID:2013918@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20261213T235900
+SUMMARY:TL-TR Progress Update #1 (2026-27 Fall) [Leadership@Anderson - Cohort 8]
+DESCRIPTION:Quiz\, 100 pts possible
+URL:https://bruinlearn.ucla.edu/courses/233745/assignments/2013918
+END:VEVENT
+BEGIN:VEVENT
+UID:2000674@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20260925T235900
+SUMMARY:Problem Set 1 [26F-MGMTFT-405-01/02/03/04 Managerial Economics]
+DESCRIPTION:100 pts possible
+URL:https://bruinlearn.ucla.edu/courses/237882/assignments/2000674
+END:VEVENT
+BEGIN:VEVENT
+UID:2000675@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20261009T235900
+SUMMARY:Problem Set 2 [26F-MGMTFT-405-01/02/03/04 Managerial Economics]
+DESCRIPTION:100 pts possible
+URL:https://bruinlearn.ucla.edu/courses/237882/assignments/2000675
+END:VEVENT
+BEGIN:VEVENT
+UID:2000676@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20261106T235900
+SUMMARY:Problem Set 3 [26F-MGMTFT-405-01/02/03/04 Managerial Economics]
+DESCRIPTION:100 pts possible
+URL:https://bruinlearn.ucla.edu/courses/237882/assignments/2000676
+END:VEVENT
+BEGIN:VEVENT
+UID:2000677@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20261120T235900
+SUMMARY:Problem Set 4 [26F-MGMTFT-405-01/02/03/04 Managerial Economics]
+DESCRIPTION:100 pts possible
+URL:https://bruinlearn.ucla.edu/courses/237882/assignments/2000677
+END:VEVENT
+BEGIN:VEVENT
+UID:2000678@bruinlearn.ucla.edu
+DTSTAMP:20260828T000000Z
+DTSTART:20261204T235900
+SUMMARY:Problem Set 5 [26F-MGMTFT-405-01/02/03/04 Managerial Economics]
+DESCRIPTION:100 pts possible
+URL:https://bruinlearn.ucla.edu/courses/237882/assignments/2000678
+END:VEVENT
+END:VCALENDAR

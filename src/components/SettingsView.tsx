@@ -1,0 +1,90 @@
+import type { ReactNode } from "react";
+import type { NotificationSettings } from "@/lib/types";
+import { Switch } from "@/components/ui/switch";
+import { BookOpen, Mail, PenLine } from "lucide-react";
+
+const LEAD_TIME_OPTIONS = [
+  { label: "15 minutes before", minutes: 15 },
+  { label: "30 minutes before", minutes: 30 },
+  { label: "1 hour before", minutes: 60 },
+  { label: "2 hours before", minutes: 120 },
+  { label: "1 day before", minutes: 60 * 24 },
+];
+
+interface SettingsViewProps {
+  settings: NotificationSettings;
+  onUpdate: (patch: Partial<NotificationSettings>) => void;
+}
+
+export function SettingsView({ settings, onUpdate }: SettingsViewProps) {
+  return (
+    <div className="h-full overflow-y-auto no-scrollbar">
+      <h2 className="mb-1 text-lg font-bold text-ink">Notifications</h2>
+      <p className="mb-4 text-sm text-slate-500">
+        Choose which task sources get automatic reminders, and how far ahead.
+      </p>
+
+      <div className="space-y-3">
+        <SourceToggleRow
+          icon={<BookOpen className="h-4 w-4" />}
+          label="BruinLearn assignments"
+          checked={settings.bruinlearnEnabled}
+          onCheckedChange={(v) => onUpdate({ bruinlearnEnabled: v })}
+        />
+        <SourceToggleRow
+          icon={<Mail className="h-4 w-4" />}
+          label="Email to-dos"
+          checked={settings.emailEnabled}
+          onCheckedChange={(v) => onUpdate({ emailEnabled: v })}
+        />
+        <SourceToggleRow
+          icon={<PenLine className="h-4 w-4" />}
+          label="Manually added tasks"
+          checked={settings.manualEnabled}
+          onCheckedChange={(v) => onUpdate({ manualEnabled: v })}
+        />
+      </div>
+
+      <div className="mt-6">
+        <p className="mb-2 text-sm font-semibold text-ink">Default reminder lead time</p>
+        <select
+          value={settings.defaultLeadMinutes}
+          onChange={(e) => onUpdate({ defaultLeadMinutes: Number(e.target.value) })}
+          className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-ink focus:border-ucla-blue focus:outline-none"
+        >
+          {LEAD_TIME_OPTIONS.map((option) => (
+            <option key={option.minutes} value={option.minutes}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <p className="mt-2 text-xs text-slate-400">
+          Applied automatically to new tasks from enabled sources — you can always override the
+          reminder for an individual task when you swipe left on it.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function SourceToggleRow({
+  icon,
+  label,
+  checked,
+  onCheckedChange,
+}: {
+  icon: ReactNode;
+  label: string;
+  checked: boolean;
+  onCheckedChange: (checked: boolean) => void;
+}) {
+  return (
+    <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3">
+      <div className="flex items-center gap-2 text-sm font-medium text-ink">
+        {icon}
+        {label}
+      </div>
+      <Switch checked={checked} onCheckedChange={onCheckedChange} />
+    </div>
+  );
+}
