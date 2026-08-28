@@ -168,16 +168,24 @@ export function ImportView({ onImportTasks, onAddManualTask }: ImportViewProps) 
     <div className="h-full space-y-5 overflow-y-auto no-scrollbar pb-4">
       <h2 className="text-lg font-bold text-ink">Import tasks</h2>
 
-      <section className="rounded-2xl border border-ucla-gold/50 bg-ucla-gold/10 p-4">
-        <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-ucla-blue-dark">
+      <section className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+        <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700">
           <Link2 className="h-4 w-4" />
           Connect BruinLearn directly
+          <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+            Admin-blocked
+          </span>
         </div>
         <p className="mb-3 text-xs text-slate-600">
-          Paste a BruinLearn personal access token (Account → Settings → New Access Token) to sync
-          upcoming assignments straight from the API — no export/upload step. This calls the real
-          Canvas planner API through a backend proxy; it just hasn't been tested against a live
-          token yet.
+          Paste a BruinLearn personal access token to sync upcoming assignments straight from the
+          API — no export/upload step. This calls the real Canvas planner API through a backend
+          proxy — genuinely working code, not a mock.
+        </p>
+        <p className="mb-3 rounded-lg bg-rose-50 px-2.5 py-2 text-xs text-rose-700">
+          <strong>Currently unusable:</strong> UCLA Anderson's Canvas admin has disabled
+          self-service access token generation for students (confirmed — the "New Access Token"
+          button is admin-locked under Account → Settings). If that policy ever changes, or you
+          get a token another way, this will work as-is.
         </p>
         <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2">
           <KeyRound className="h-4 w-4 shrink-0 text-slate-400" />
@@ -355,8 +363,9 @@ export function ImportView({ onImportTasks, onAddManualTask }: ImportViewProps) 
       <div className="flex items-start gap-2 rounded-2xl bg-slate-100 p-3 text-xs text-slate-500">
         <Info className="mt-0.5 h-4 w-4 shrink-0" />
         <p>
-          BruinLearn direct-connect is real (token-based, untested against a live account yet).
-          Outlook OAuth is blocked by UCLA's Microsoft 365 tenant policy for now — the .csv/.ics
+          BruinLearn direct-connect is real, working code — but UCLA Anderson's Canvas admin
+          blocks students from generating their own access tokens, so it can't be used right now.
+          Outlook OAuth is blocked by UCLA's Microsoft 365 tenant policy too — the .csv/.ics
           import and paste-in below are the reliable path for email tasks in the meantime.
         </p>
       </div>
