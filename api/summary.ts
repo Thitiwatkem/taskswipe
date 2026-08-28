@@ -1,43 +1,9 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
+import { applyCors, getClientIp, isRateLimited } from "./_lib/security.js";
 
 const CLAUDE_MODEL = "claude-haiku-4-5-20251001";
 const MAX_PROMPT_LENGTH = 4000;
-
-const ALLOWED_ORIGINS = [
-  "https://thitiwatkem.github.io",
-  "http://localhost:5173",
-];
-
-// Best-effort in-memory rate limit. Serverless instances are ephemeral and
-// this doesn't share state across instances, but it's a reasonable guard
-// against a single hot loop or bot hammering this endpoint during the demo.
-const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 30;
-const requestLog = new Map<string, number[]>();
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const timestamps = (requestLog.get(ip) ?? []).filter(
-    (t) => now - t < RATE_LIMIT_WINDOW_MS,
-  );
-  timestamps.push(now);
-  requestLog.set(ip, timestamps);
-  return timestamps.length > RATE_LIMIT_MAX_REQUESTS;
-}
-
-function applyCors(req: VercelRequest, res: VercelResponse): boolean {
-  const origin = req.headers.origin;
-  const isAllowedOrigin =
-    typeof origin === "string" &&
-    (ALLOWED_ORIGINS.includes(origin) || origin.endsWith(".vercel.app"));
-
-  if (isAllowedOrigin) {
-    res.setHeader("Access-Control-Allow-Origin", origin as string);
-    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  }
-  return isAllowedOrigin;
-}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const allowed = applyCors(req, res);
@@ -57,8 +23,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || "unknown";
-  if (isRateLimited(ip)) {
+  if (isRateLimited("summary", getClientIp(req), RATE_LIMIT_MAX_REQUESTS)) {
     res.status(429).json({ error: "Too many requests, try again shortly." });
     return;
   }

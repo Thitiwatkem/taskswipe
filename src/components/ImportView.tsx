@@ -4,8 +4,18 @@ import { Button } from "@/components/ui/button";
 import { parseIcsToTasks } from "@/lib/ics";
 import { parseCsvToTasks } from "@/lib/csv";
 import { parsePastedTasks } from "@/lib/ai";
+import { connectBruinLearn } from "@/lib/bruinlearnApi";
 import { makeId } from "@/lib/utils";
-import { CalendarPlus, FileSpreadsheet, Info, PenLine, Sparkles, Upload } from "lucide-react";
+import {
+  CalendarPlus,
+  FileSpreadsheet,
+  Info,
+  KeyRound,
+  Link2,
+  PenLine,
+  Sparkles,
+  Upload,
+} from "lucide-react";
 
 interface ImportViewProps {
   onImportTasks: (tasks: Task[]) => void;
@@ -19,6 +29,11 @@ interface ImportViewProps {
 }
 
 export function ImportView({ onImportTasks, onAddManualTask }: ImportViewProps) {
+  const [bruinToken, setBruinToken] = useState("");
+  const [isConnectingBruin, setIsConnectingBruin] = useState(false);
+  const [bruinStatus, setBruinStatus] = useState<string | null>(null);
+  const [bruinError, setBruinError] = useState<string | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [icsStatus, setIcsStatus] = useState<string | null>(null);
   const [icsError, setIcsError] = useState<string | null>(null);
@@ -36,6 +51,26 @@ export function ImportView({ onImportTasks, onAddManualTask }: ImportViewProps) 
   const [manualDue, setManualDue] = useState("");
   const [manualDescription, setManualDescription] = useState("");
   const [manualLink, setManualLink] = useState("");
+
+  async function handleConnectBruinLearn() {
+    if (!bruinToken.trim()) return;
+    setIsConnectingBruin(true);
+    setBruinError(null);
+    setBruinStatus(null);
+    try {
+      const { tasks } = await connectBruinLearn(bruinToken.trim());
+      if (tasks.length === 0) {
+        setBruinError("Connected, but no upcoming items came back from BruinLearn.");
+        return;
+      }
+      onImportTasks(tasks);
+      setBruinStatus(`Synced ${tasks.length} task${tasks.length === 1 ? "" : "s"} from BruinLearn.`);
+    } catch (error) {
+      setBruinError(error instanceof Error ? error.message : "Couldn't connect to BruinLearn.");
+    } finally {
+      setIsConnectingBruin(false);
+    }
+  }
 
   async function handleIcsFile(file: File) {
     setIcsError(null);
@@ -125,14 +160,47 @@ export function ImportView({ onImportTasks, onAddManualTask }: ImportViewProps) 
     <div className="h-full space-y-5 overflow-y-auto no-scrollbar pb-4">
       <h2 className="text-lg font-bold text-ink">Import tasks</h2>
 
+      <section className="rounded-2xl border border-ucla-gold/50 bg-ucla-gold/10 p-4">
+        <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-ucla-blue-dark">
+          <Link2 className="h-4 w-4" />
+          Connect BruinLearn directly
+        </div>
+        <p className="mb-3 text-xs text-slate-600">
+          Paste a BruinLearn personal access token (Account → Settings → New Access Token) to sync
+          upcoming assignments straight from the API — no export/upload step. This calls the real
+          Canvas planner API through a backend proxy; it just hasn't been tested against a live
+          token yet.
+        </p>
+        <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2">
+          <KeyRound className="h-4 w-4 shrink-0 text-slate-400" />
+          <input
+            type="password"
+            value={bruinToken}
+            onChange={(e) => setBruinToken(e.target.value)}
+            placeholder="BruinLearn access token"
+            autoComplete="off"
+            className="w-full text-sm text-ink focus:outline-none"
+          />
+        </div>
+        <Button
+          onClick={handleConnectBruinLearn}
+          disabled={isConnectingBruin || !bruinToken.trim()}
+          className="mt-2 w-full"
+        >
+          {isConnectingBruin ? "Connecting…" : "Connect & sync"}
+        </Button>
+        {bruinStatus && <p className="mt-2 text-xs font-medium text-emerald-700">{bruinStatus}</p>}
+        {bruinError && <p className="mt-2 text-xs font-medium text-rose-600">{bruinError}</p>}
+      </section>
+
       <section className="rounded-2xl border border-ucla-blue/30 bg-ucla-blue/5 p-4">
         <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-ucla-blue-dark">
           <CalendarPlus className="h-4 w-4" />
           Upload a calendar export (.ics)
         </div>
         <p className="mb-3 text-xs text-slate-600">
-          Export your BruinLearn calendar feed as .ics and drop it here — this is the primary way
-          to bring in real assignments and class sessions.
+          Export your BruinLearn calendar feed as .ics and drop it here — this is the tested,
+          reliable way to bring in real assignments and class sessions.
         </p>
         <input
           ref={fileInputRef}
@@ -260,8 +328,8 @@ export function ImportView({ onImportTasks, onAddManualTask }: ImportViewProps) 
       <div className="flex items-start gap-2 rounded-2xl bg-slate-100 p-3 text-xs text-slate-500">
         <Info className="mt-0.5 h-4 w-4 shrink-0" />
         <p>
-          BruinLearn and Gmail live sync are planned for the next version — this MVP uses calendar
-          export import.
+          Direct BruinLearn sync is above (token-based, untested against a live account). Outlook
+          live sync is still planned for the next version — for now, use the .csv/.ics import.
         </p>
       </div>
     </div>
