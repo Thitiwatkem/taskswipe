@@ -1,8 +1,8 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import type { NotificationSettings } from "@/lib/types";
 import { Switch } from "@/components/ui/switch";
 import { requestMotionPermission } from "@/lib/motion";
-import { BookOpen, Mail, PenLine, Sparkles } from "lucide-react";
+import { BookOpen, Mail, PenLine, ShieldCheck, Sparkles } from "lucide-react";
 
 const LEAD_TIME_OPTIONS = [
   { label: "15 minutes before", minutes: 15 },
@@ -18,6 +18,13 @@ interface SettingsViewProps {
 }
 
 export function SettingsView({ settings, onUpdate }: SettingsViewProps) {
+  const [motionStatus, setMotionStatus] = useState<"idle" | "granted" | "denied">("idle");
+
+  async function handleEnableMotion() {
+    const granted = await requestMotionPermission();
+    setMotionStatus(granted ? "granted" : "denied");
+  }
+
   return (
     <div className="h-full overflow-y-auto no-scrollbar">
       <section className="rounded-2xl border border-ucla-blue/30 bg-ucla-blue/5 p-4">
@@ -96,8 +103,7 @@ export function SettingsView({ settings, onUpdate }: SettingsViewProps) {
           <div className="pr-3 text-sm font-medium text-ink">
             Shake to undo last swipe
             <p className="mt-0.5 text-xs font-normal text-slate-400">
-              Shake your phone right after swiping to bring the last card back. iOS will ask for
-              motion access the first time you turn this on.
+              Shake your phone right after swiping to bring the last card back.
             </p>
           </div>
           <Switch
@@ -108,6 +114,24 @@ export function SettingsView({ settings, onUpdate }: SettingsViewProps) {
             }}
           />
         </div>
+
+        {settings.shakeToUndoEnabled && (
+          <button
+            onClick={handleEnableMotion}
+            className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-ucla-blue/40 px-4 py-2.5 text-xs font-semibold text-ucla-blue hover:bg-ucla-blue/5"
+          >
+            {motionStatus === "granted" ? (
+              <>
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Motion access granted — give it a shake
+              </>
+            ) : motionStatus === "denied" ? (
+              "Motion access denied — enable it for this site in iOS Settings → Safari"
+            ) : (
+              "Tap here to enable motion access on this phone"
+            )}
+          </button>
+        )}
       </div>
     </div>
   );

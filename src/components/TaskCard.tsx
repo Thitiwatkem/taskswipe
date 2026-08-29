@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import { motion, useAnimation, useMotionValue, useTransform, type PanInfo } from "framer-motion";
 import type { Task } from "@/lib/types";
 import { SourceBadge } from "@/components/ui/badge";
@@ -28,6 +28,14 @@ const SWIPE_THRESHOLD_X = 110;
 const SWIPE_THRESHOLD_Y = 100;
 const VELOCITY_THRESHOLD = 500;
 
+// Framer's built-in tap gesture only backs off once its own drag session
+// has "activated," which on a real phone can lag behind a fast, short flick
+// — so a quick swipe gets misread as a tap and opens details instead of
+// triaging. Tracking pointerdown/up ourselves and gating on distance + time
+// (well below the swipe thresholds above) avoids that race entirely.
+const TAP_MAX_DISTANCE = 10;
+const TAP_MAX_DURATION_MS = 350;
+
 function urgencyClass(dueDate: string | null): string {
   if (!dueDate) return "text-slate-500";
   const diffHours = (new Date(dueDate).getTime() - Date.now()) / 36e5;
@@ -46,6 +54,23 @@ export const TaskCard = forwardRef<TaskCardHandle, TaskCardProps>(
     const leftStampOpacity = useTransform(x, [-120, -20], [1, 0]);
     const upStampOpacity = useTransform(y, [-120, -20], [1, 0]);
     const [isFlinging, setIsFlinging] = useState(false);
+    const pointerDownRef = useRef<{ x: number; y: number; time: number } | null>(null);
+
+    function handlePointerDown(e: React.PointerEvent) {
+      pointerDownRef.current = { x: e.clientX, y: e.clientY, time: Date.now() };
+    }
+
+    function handlePointerUp(e: React.PointerEvent) {
+      const start = pointerDownRef.current;
+      pointerDownRef.current = null;
+      if (!start) return;
+
+      const distance = Math.hypot(e.clientX - start.x, e.clientY - start.y);
+      const duration = Date.now() - start.time;
+      if (distance <= TAP_MAX_DISTANCE && duration <= TAP_MAX_DURATION_MS) {
+        onOpenDetails();
+      }
+    }
 
     function fling(direction: SwipeDirection) {
       if (isFlinging) return;
@@ -117,7 +142,8 @@ export const TaskCard = forwardRef<TaskCardHandle, TaskCardProps>(
           drag={isTop}
           dragElastic={0.9}
           onDragEnd={isTop ? handleDragEnd : undefined}
-          onTap={isTop ? onOpenDetails : undefined}
+          onPointerDown={isTop ? handlePointerDown : undefined}
+          onPointerUp={isTop ? handlePointerUp : undefined}
           animate={controls}
         >
           {isTop && (
