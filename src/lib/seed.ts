@@ -82,7 +82,7 @@ const BRUINLEARN_SEED_SPECS: Omit<SeedSpec, "source">[] = [
   {
     title: "Build-A-Thon: Parker-Easton Project Submission Deadline",
     courseOrSender: "Summer Technology Immersion 2026",
-    dueDate: "2026-08-31T08:00:00",
+    dueDate: "2026-08-30T12:00:00",
     description: "100 pts possible",
     link: "https://bruinlearn.ucla.edu/courses/240009/assignments/2005502",
     category: "group_project",

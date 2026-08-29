@@ -11,6 +11,11 @@ const TASKS_KEY = "tasks";
 const SETTINGS_KEY = "settings";
 const ONBOARDED_KEY = "hasOnboarded";
 
+// The real Build-a-Thon deadline moved — correct it for accounts that seeded
+// before this changed, since seed.ts alone only affects fresh onboarding.
+const BUILD_A_THON_TITLE = "Build-A-Thon: Parker-Easton Project Submission Deadline";
+const BUILD_A_THON_DUE = "2026-08-30T12:00:00";
+
 interface LastSwipeAction {
   taskId: string;
   prevTask: Task;
@@ -21,9 +26,13 @@ export function useTaskStore() {
   const [tasks, setTasks] = useState<Task[]>(() =>
     // Backfill category for tasks persisted before this field existed —
     // otherwise CATEGORY_META lookups would break on old saved data.
-    loadFromStorage<Task[]>(TASKS_KEY, []).map((t) =>
-      t.category ? t : { ...t, category: categorizeTask(t) },
-    ),
+    loadFromStorage<Task[]>(TASKS_KEY, [])
+      .map((t) => (t.category ? t : { ...t, category: categorizeTask(t) }))
+      .map((t) =>
+        t.title === BUILD_A_THON_TITLE && t.dueDate !== BUILD_A_THON_DUE
+          ? { ...t, dueDate: BUILD_A_THON_DUE }
+          : t,
+      ),
   );
   const [settings, setSettings] = useState<NotificationSettings>(() => ({
     // Merge over the defaults so fields added after a user's first visit
