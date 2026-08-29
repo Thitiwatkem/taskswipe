@@ -1,7 +1,11 @@
+import { useMemo, useState } from "react";
 import type { Task } from "@/lib/types";
+import type { TaskCategory } from "@/lib/category";
+import { CATEGORY_META } from "@/lib/category";
 import { SourceBadge, CategoryBadge } from "@/components/ui/badge";
 import { Archive, ExternalLink, RotateCcw } from "lucide-react";
 import { AiSummaryToggle } from "@/components/AiSummaryToggle";
+import { cn } from "@/lib/utils";
 
 interface ArchiveViewProps {
   tasks: Task[];
@@ -9,6 +13,19 @@ interface ArchiveViewProps {
 }
 
 export function ArchiveView({ tasks, onRestore }: ArchiveViewProps) {
+  const [filter, setFilter] = useState<TaskCategory | "all">("all");
+
+  const presentCategories = useMemo(() => {
+    const set = new Set<TaskCategory>();
+    tasks.forEach((t) => set.add(t.category));
+    return Array.from(set);
+  }, [tasks]);
+
+  const filteredTasks = useMemo(
+    () => (filter === "all" ? tasks : tasks.filter((t) => t.category === filter)),
+    [tasks, filter],
+  );
+
   if (tasks.length === 0) {
     return (
       <div className="flex h-full flex-col items-center justify-center text-center text-slate-400">
@@ -21,8 +38,28 @@ export function ArchiveView({ tasks, onRestore }: ArchiveViewProps) {
   return (
     <div className="h-full overflow-y-auto no-scrollbar">
       <h2 className="mb-3 text-lg font-bold text-ink">Archive</h2>
-      <div className="space-y-2 pb-4">
-        {tasks.map((task) => (
+
+      {presentCategories.length > 1 && (
+        <div className="mb-3 flex flex-wrap gap-1.5">
+          <FilterChip label="All" active={filter === "all"} onClick={() => setFilter("all")} />
+          {presentCategories.map((cat) => (
+            <FilterChip
+              key={cat}
+              label={CATEGORY_META[cat].label}
+              active={filter === cat}
+              onClick={() => setFilter(cat)}
+            />
+          ))}
+        </div>
+      )}
+
+      {filteredTasks.length === 0 ? (
+        <p className="py-8 text-center text-sm text-slate-400">
+          No archived tasks in this category.
+        </p>
+      ) : (
+        <div className="space-y-2 pb-4">
+          {filteredTasks.map((task) => (
           <div key={task.id} className="rounded-xl border border-slate-200 bg-white p-3 opacity-80">
             <div className="mb-1 flex items-center justify-between">
               <div className="flex items-center gap-1.5">
@@ -61,8 +98,33 @@ export function ArchiveView({ tasks, onRestore }: ArchiveViewProps) {
               </button>
             </div>
           </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
+  );
+}
+
+function FilterChip({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
+        active
+          ? "border-ucla-blue bg-ucla-blue/10 text-ucla-blue-dark"
+          : "border-slate-200 bg-white text-slate-500 hover:bg-slate-50",
+      )}
+    >
+      {label}
+    </button>
   );
 }

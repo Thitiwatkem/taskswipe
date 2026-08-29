@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { NotificationSettings } from "@/lib/types";
 import { Switch } from "@/components/ui/switch";
+import { requestMotionPermission } from "@/lib/motion";
 import { BookOpen, Mail, PenLine, Sparkles } from "lucide-react";
 
 const LEAD_TIME_OPTIONS = [
@@ -86,6 +87,25 @@ export function SettingsView({ settings, onUpdate }: SettingsViewProps) {
           <Switch
             checked={settings.autoApplyDefaultOnSwipeLeft}
             onCheckedChange={(v) => onUpdate({ autoApplyDefaultOnSwipeLeft: v })}
+          />
+        </div>
+      </div>
+
+      <div className="mt-3">
+        <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3">
+          <div className="pr-3 text-sm font-medium text-ink">
+            Shake to undo last swipe
+            <p className="mt-0.5 text-xs font-normal text-slate-400">
+              Shake your phone right after swiping to bring the last card back. iOS will ask for
+              motion access the first time you turn this on.
+            </p>
+          </div>
+          <Switch
+            checked={settings.shakeToUndoEnabled}
+            onCheckedChange={(v) => {
+              if (v) void requestMotionPermission();
+              onUpdate({ shakeToUndoEnabled: v });
+            }}
           />
         </div>
       </div>

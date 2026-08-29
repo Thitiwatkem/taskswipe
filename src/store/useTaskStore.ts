@@ -11,6 +11,12 @@ const TASKS_KEY = "tasks";
 const SETTINGS_KEY = "settings";
 const ONBOARDED_KEY = "hasOnboarded";
 
+interface LastSwipeAction {
+  taskId: string;
+  prevTask: Task;
+  kind: "done" | "keep";
+}
+
 export function useTaskStore() {
   const [tasks, setTasks] = useState<Task[]>(() =>
     // Backfill category for tasks persisted before this field existed —
@@ -30,6 +36,8 @@ export function useTaskStore() {
     loadFromStorage(ONBOARDED_KEY, false),
   );
   const [sessionArchivedCount, setSessionArchivedCount] = useState(0);
+  const [lastAction, setLastAction] = useState<LastSwipeAction | null>(null);
+  const [lastUndoneTaskId, setLastUndoneTaskId] = useState<string | null>(null);
 
   useEffect(() => saveToStorage(TASKS_KEY, tasks), [tasks]);
   useEffect(() => saveToStorage(SETTINGS_KEY, settings), [settings]);
@@ -61,6 +69,22 @@ export function useTaskStore() {
 
   const updateNotes = useCallback((id: string, notes: string) => {
     setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, notes } : t)));
+  }, []);
+
+  // Snapshot a task right before a swipe mutates it, so a shake gesture can
+  // put it back exactly as it was.
+  const recordAction = useCallback((task: Task, kind: "done" | "keep") => {
+    setLastAction({ taskId: task.id, prevTask: task, kind });
+  }, []);
+
+  const undoLast = useCallback(() => {
+    setLastAction((current) => {
+      if (!current) return current;
+      setTasks((prev) => prev.map((t) => (t.id === current.taskId ? current.prevTask : t)));
+      setLastUndoneTaskId(current.taskId);
+      if (current.kind === "done") setSessionArchivedCount((c) => Math.max(0, c - 1));
+      return null;
+    });
   }, []);
 
   const restoreTask = useCallback((id: string) => {
@@ -140,10 +164,14 @@ export function useTaskStore() {
     settings,
     hasOnboarded,
     sessionArchivedCount,
+    lastAction,
+    lastUndoneTaskId,
     beginWithSeedData,
     markDone,
     setReminder,
     updateNotes,
+    recordAction,
+    undoLast,
     restoreTask,
     importTasks,
     addManualTask,

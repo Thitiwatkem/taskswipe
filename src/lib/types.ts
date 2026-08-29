@@ -25,6 +25,7 @@ export interface NotificationSettings {
   manualEnabled: boolean;
   defaultLeadMinutes: number;
   autoApplyDefaultOnSwipeLeft: boolean;
+  shakeToUndoEnabled: boolean;
 }
 
 export const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
@@ -33,4 +34,5 @@ export const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
   manualEnabled: false,
   defaultLeadMinutes: 60,
   autoApplyDefaultOnSwipeLeft: true,
+  shakeToUndoEnabled: true,
 };

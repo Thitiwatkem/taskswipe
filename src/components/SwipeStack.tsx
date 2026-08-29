@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import type { Task } from "@/lib/types";
 import type { TaskStore } from "@/store/useTaskStore";
@@ -17,11 +17,32 @@ interface SwipeStackProps {
 }
 
 export function SwipeStack({ store, onNavigateToCalendar }: SwipeStackProps) {
-  const { activeTasks, tasks, settings, markDone, setReminder, updateNotes, sessionArchivedCount } =
-    store;
+  const {
+    activeTasks,
+    tasks,
+    settings,
+    markDone,
+    setReminder,
+    updateNotes,
+    recordAction,
+    lastUndoneTaskId,
+    sessionArchivedCount,
+  } = store;
   const [triagedIds, setTriagedIds] = useState<Set<string>>(new Set());
   const [detailTaskId, setDetailTaskId] = useState<string | null>(null);
   const topCardRef = useRef<TaskCardHandle>(null);
+
+  // A shake gesture undid the last swipe — bring that card back into the
+  // queue instead of leaving it triaged out.
+  useEffect(() => {
+    if (!lastUndoneTaskId) return;
+    setTriagedIds((prev) => {
+      if (!prev.has(lastUndoneTaskId)) return prev;
+      const next = new Set(prev);
+      next.delete(lastUndoneTaskId);
+      return next;
+    });
+  }, [lastUndoneTaskId]);
 
   const queue = useMemo(
     () => activeTasks.filter((t) => !triagedIds.has(t.id)),
@@ -44,6 +65,7 @@ export function SwipeStack({ store, onNavigateToCalendar }: SwipeStackProps) {
     setTriagedIds((prev) => new Set(prev).add(task.id));
 
     if (direction === "right") {
+      recordAction(task, "done");
       markDone(task.id);
       return;
     }
@@ -56,7 +78,10 @@ export function SwipeStack({ store, onNavigateToCalendar }: SwipeStackProps) {
     if (settings.autoApplyDefaultOnSwipeLeft) {
       if (!task.reminderAt) {
         const auto = computeAutoReminder(task, settings);
-        if (auto) setReminder(task.id, auto);
+        if (auto) {
+          recordAction(task, "keep");
+          setReminder(task.id, auto);
+        }
       }
     } else {
       setDetailTaskId(task.id);

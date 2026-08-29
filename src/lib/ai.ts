@@ -88,6 +88,43 @@ export async function generateTaskSummary(task: Task): Promise<string> {
   return completeText(prompt);
 }
 
+export async function generateUpcomingBriefing(tasks: Task[]): Promise<string> {
+  if (tasks.length === 0) return "Nothing urgent coming up — enjoy the breathing room.";
+
+  const lines = tasks.map(
+    (t, i) =>
+      `${i + 1}. ${t.title} (${t.source}, ${t.courseOrSender}) — due bucket: ${classifyDueBucket(t.dueDate)}`,
+  );
+
+  const prompt = [
+    "You are a planning assistant for a busy MBA student. Given this list of upcoming tasks, ordered by due date, write a short (2-3 sentence) plain-English game plan: what to tackle first and roughly how much focused time to set aside overall. Be encouraging and concrete.",
+    ...lines,
+  ].join("\n");
+
+  try {
+    return await callSummaryApi(prompt);
+  } catch (error) {
+    console.error("AI briefing API call failed, falling back to local summary:", error);
+    return localBriefingFallback(tasks);
+  }
+}
+
+function localBriefingFallback(tasks: Task[]): string {
+  const first = tasks[0];
+  const overdueCount = tasks.filter((t) => classifyDueBucket(t.dueDate) === "overdue").length;
+  const soonCount = tasks.filter((t) => classifyDueBucket(t.dueDate) === "soon").length;
+  const roughHours = Math.max(1, Math.round(tasks.length * 0.75));
+
+  const urgencyNote =
+    overdueCount > 0
+      ? `${overdueCount} of these are already overdue, so start there.`
+      : soonCount > 0
+        ? `${soonCount} are due within a day, so prioritize those first.`
+        : "Nothing is on fire yet, so tackle them in due-date order.";
+
+  return `Start with "${first.title}" — ${urgencyNote} Budget around ${roughHours} focused hour${roughHours === 1 ? "" : "s"} total to clear this list comfortably.`;
+}
+
 function classifyDueBucket(dueDate: string | null): "overdue" | "soon" | "later" | "none" {
   if (!dueDate) return "none";
   const diffHours = (new Date(dueDate).getTime() - Date.now()) / (1000 * 60 * 60);
