@@ -11,8 +11,14 @@ import { Check, ChevronUp, X } from "lucide-react";
 
 const VISIBLE_CARDS = 3;
 
-export function SwipeStack({ store }: { store: TaskStore }) {
-  const { activeTasks, tasks, settings, markDone, setReminder, sessionArchivedCount } = store;
+interface SwipeStackProps {
+  store: TaskStore;
+  onNavigateToCalendar: () => void;
+}
+
+export function SwipeStack({ store, onNavigateToCalendar }: SwipeStackProps) {
+  const { activeTasks, tasks, settings, markDone, setReminder, updateNotes, sessionArchivedCount } =
+    store;
   const [triagedIds, setTriagedIds] = useState<Set<string>>(new Set());
   const [detailTaskId, setDetailTaskId] = useState<string | null>(null);
   const topCardRef = useRef<TaskCardHandle>(null);
@@ -28,6 +34,13 @@ export function SwipeStack({ store }: { store: TaskStore }) {
     : undefined;
 
   function handleDecided(task: Task, direction: SwipeDirection) {
+    // Swipe up is a navigation shortcut to the Calendar tab, not a triage
+    // decision — leave the task in the queue untouched.
+    if (direction === "up") {
+      onNavigateToCalendar();
+      return;
+    }
+
     setTriagedIds((prev) => new Set(prev).add(task.id));
 
     if (direction === "right") {
@@ -35,14 +48,9 @@ export function SwipeStack({ store }: { store: TaskStore }) {
       return;
     }
 
-    if (direction === "up") {
-      setDetailTaskId(task.id);
-      return;
-    }
-
     // Plain "keep" swipe. With the setting on, silently apply the default
     // reminder (if one isn't already set) instead of opening the detail
-    // screen — that's reserved for the swipe-up gesture. With it off, fall
+    // screen — that's reserved for tapping the card. With it off, fall
     // back to the original behavior of opening the detail screen here too,
     // so a manual reminder can still be picked.
     if (settings.autoApplyDefaultOnSwipeLeft) {
@@ -63,6 +71,7 @@ export function SwipeStack({ store }: { store: TaskStore }) {
             key={detailTask.id}
             task={detailTask}
             onSetReminder={(reminderAt) => setReminder(detailTask.id, reminderAt)}
+            onUpdateNotes={(notes) => updateNotes(detailTask.id, notes)}
             onBack={() => setDetailTaskId(null)}
           />
         </AnimatePresence>
@@ -85,6 +94,7 @@ export function SwipeStack({ store }: { store: TaskStore }) {
             stackPosition={i}
             isTop={i === 0}
             onDecided={(direction) => handleDecided(task, direction)}
+            onOpenDetails={() => setDetailTaskId(task.id)}
           />
         ))}
       </div>
@@ -104,7 +114,7 @@ export function SwipeStack({ store }: { store: TaskStore }) {
           size="icon"
           className="h-12 w-12 border-2 border-ucla-blue/30 text-ucla-blue hover:bg-ucla-blue/10"
           onClick={() => topCardRef.current?.swipeUp()}
-          aria-label="Open details and set a custom reminder"
+          aria-label="Go to calendar"
         >
           <ChevronUp className="h-5 w-5" />
         </Button>
@@ -119,7 +129,7 @@ export function SwipeStack({ store }: { store: TaskStore }) {
         </Button>
       </div>
       <p className="mt-3 text-center text-xs text-slate-400">
-        {queue.length} left in this session &middot; swipe or tap to triage
+        {queue.length} left in this session &middot; swipe to triage &middot; tap for details
       </p>
     </div>
   );

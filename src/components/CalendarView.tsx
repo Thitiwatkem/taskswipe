@@ -3,7 +3,7 @@ import type { Task } from "@/lib/types";
 import { SourceBadge, CategoryBadge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDueDate } from "@/lib/reminders";
-import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink, StickyNote } from "lucide-react";
 import { AiSummaryToggle } from "@/components/AiSummaryToggle";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +17,12 @@ function isSameDay(a: Date, b: Date) {
   );
 }
 
-export function CalendarView({ tasks }: { tasks: Task[] }) {
+interface CalendarViewProps {
+  tasks: Task[];
+  onUpdateNotes: (id: string, notes: string) => void;
+}
+
+export function CalendarView({ tasks, onUpdateNotes }: CalendarViewProps) {
   const [cursor, setCursor] = useState(() => new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
@@ -132,6 +137,7 @@ export function CalendarView({ tasks }: { tasks: Task[] }) {
                     </a>
                   )}
                   <AiSummaryToggle task={task} />
+                  <TaskNoteEditor task={task} onUpdateNotes={onUpdateNotes} />
                 </div>
               ))}
             </div>
@@ -142,6 +148,48 @@ export function CalendarView({ tasks }: { tasks: Task[] }) {
           <p className="text-center text-sm text-slate-400">Tap a day to see what's due.</p>
         )}
       </div>
+    </div>
+  );
+}
+
+function TaskNoteEditor({
+  task,
+  onUpdateNotes,
+}: {
+  task: Task;
+  onUpdateNotes: (id: string, notes: string) => void;
+}) {
+  const [expanded, setExpanded] = useState(!!task.notes);
+  const [value, setValue] = useState(task.notes ?? "");
+
+  if (!expanded) {
+    return (
+      <button
+        onClick={() => setExpanded(true)}
+        className="mt-1.5 flex items-center gap-1 text-xs font-medium text-slate-400 hover:text-ucla-blue"
+      >
+        <StickyNote className="h-3 w-3" />
+        Add note
+      </button>
+    );
+  }
+
+  return (
+    <div className="mt-1.5">
+      <div className="mb-1 flex items-center gap-1 text-xs font-medium text-slate-400">
+        <StickyNote className="h-3 w-3" />
+        Note
+      </div>
+      <textarea
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+          onUpdateNotes(task.id, e.target.value);
+        }}
+        placeholder="Add a note…"
+        rows={2}
+        className="w-full resize-none rounded-lg border border-slate-200 px-2 py-1.5 text-xs text-ink focus:border-ucla-blue focus:outline-none"
+      />
     </div>
   );
 }

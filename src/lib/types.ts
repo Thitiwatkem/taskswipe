@@ -16,6 +16,7 @@ export interface Task {
   doneAt?: string | null;
   link?: string | null;
   category: TaskCategory;
+  notes?: string | null;
 }
 
 export interface NotificationSettings {

@@ -38,8 +38,12 @@ function App() {
             <Onboarding onStart={store.beginWithSeedData} />
           ) : (
             <>
-              {view === "swipe" && <SwipeStack store={store} />}
-              {view === "calendar" && <CalendarView tasks={store.activeTasks} />}
+              {view === "swipe" && (
+                <SwipeStack store={store} onNavigateToCalendar={() => setView("calendar")} />
+              )}
+              {view === "calendar" && (
+                <CalendarView tasks={store.activeTasks} onUpdateNotes={store.updateNotes} />
+              )}
               {view === "archive" && (
                 <ArchiveView tasks={store.doneTasks} onRestore={store.restoreTask} />
               )}

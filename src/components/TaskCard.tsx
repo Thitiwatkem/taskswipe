@@ -21,6 +21,7 @@ interface TaskCardProps {
   stackPosition: number;
   isTop: boolean;
   onDecided: (direction: SwipeDirection) => void;
+  onOpenDetails: () => void;
 }
 
 const SWIPE_THRESHOLD_X = 110;
@@ -36,7 +37,7 @@ function urgencyClass(dueDate: string | null): string {
 }
 
 export const TaskCard = forwardRef<TaskCardHandle, TaskCardProps>(
-  ({ task, stackPosition, isTop, onDecided }, ref) => {
+  ({ task, stackPosition, isTop, onDecided, onOpenDetails }, ref) => {
     const controls = useAnimation();
     const x = useMotionValue(0);
     const y = useMotionValue(0);
@@ -116,6 +117,7 @@ export const TaskCard = forwardRef<TaskCardHandle, TaskCardProps>(
           drag={isTop}
           dragElastic={0.9}
           onDragEnd={isTop ? handleDragEnd : undefined}
+          onTap={isTop ? onOpenDetails : undefined}
           animate={controls}
         >
           {isTop && (
@@ -136,7 +138,7 @@ export const TaskCard = forwardRef<TaskCardHandle, TaskCardProps>(
                 style={{ opacity: upStampOpacity }}
                 className="pointer-events-none absolute left-1/2 top-20 z-10 -translate-x-1/2 rounded-lg border-4 border-ucla-blue bg-white/90 px-3 py-1 text-xl font-extrabold uppercase tracking-wide text-ucla-blue"
               >
-                Details
+                Calendar
               </motion.div>
 
               <CategoryBanner category={task.category} />
@@ -172,12 +174,15 @@ export const TaskCard = forwardRef<TaskCardHandle, TaskCardProps>(
                   </a>
                 )}
 
-                <div className="mt-auto flex items-center justify-center gap-2.5 pt-6 text-xs text-slate-400">
-                  <X className="h-3.5 w-3.5" /> keep
-                  <span className="mx-0.5">·</span>
-                  <ChevronUp className="h-3.5 w-3.5" /> details
-                  <span className="mx-0.5">·</span>
-                  done <Check className="h-3.5 w-3.5" />
+                <div className="mt-auto pt-6">
+                  <div className="flex items-center justify-center gap-2.5 text-xs text-slate-400">
+                    <X className="h-3.5 w-3.5" /> keep
+                    <span className="mx-0.5">·</span>
+                    <ChevronUp className="h-3.5 w-3.5" /> calendar
+                    <span className="mx-0.5">·</span>
+                    done <Check className="h-3.5 w-3.5" />
+                  </div>
+                  <p className="mt-1 text-center text-[10px] text-slate-300">Tap card for details</p>
                 </div>
               </div>
             </>

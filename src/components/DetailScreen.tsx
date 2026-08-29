@@ -5,17 +5,19 @@ import { Button } from "@/components/ui/button";
 import { SourceBadge, CategoryBadge } from "@/components/ui/badge";
 import { generateTaskSummary } from "@/lib/ai";
 import { QUICK_REMINDER_OPTIONS, formatDueDate, formatReminderAt, reminderTimeFor } from "@/lib/reminders";
-import { ArrowLeft, BellRing, ExternalLink, Sparkles } from "lucide-react";
+import { ArrowLeft, BellRing, ExternalLink, Sparkles, StickyNote } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DetailScreenProps {
   task: Task;
   onSetReminder: (reminderAt: string | null) => void;
+  onUpdateNotes: (notes: string) => void;
   onBack: () => void;
 }
 
-export function DetailScreen({ task, onSetReminder, onBack }: DetailScreenProps) {
+export function DetailScreen({ task, onSetReminder, onUpdateNotes, onBack }: DetailScreenProps) {
   const [summary, setSummary] = useState<string | null>(null);
+  const [notes, setNotes] = useState(task.notes ?? "");
   const [selectedMinutes, setSelectedMinutes] = useState<number | null>(() => {
     if (!task.dueDate || !task.reminderAt) return null;
     const match = QUICK_REMINDER_OPTIONS.find(
@@ -141,6 +143,23 @@ export function DetailScreen({ task, onSetReminder, onBack }: DetailScreenProps)
         </div>
 
         <p className="mt-3 text-xs text-slate-500">{formatReminderAt(task.reminderAt)}</p>
+
+        <div className="mt-5">
+          <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <StickyNote className="h-3.5 w-3.5" />
+            Notes
+          </div>
+          <textarea
+            value={notes}
+            onChange={(e) => {
+              setNotes(e.target.value);
+              onUpdateNotes(e.target.value);
+            }}
+            placeholder="Add a note about this task…"
+            rows={3}
+            className="w-full resize-none rounded-xl border border-slate-200 px-3 py-2 text-sm text-ink focus:border-ucla-blue focus:outline-none"
+          />
+        </div>
       </div>
 
       <Button variant="default" size="lg" onClick={onBack} className="mt-4 w-full">

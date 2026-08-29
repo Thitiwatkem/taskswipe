@@ -59,6 +59,10 @@ export function useTaskStore() {
     setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, reminderAt } : t)));
   }, []);
 
+  const updateNotes = useCallback((id: string, notes: string) => {
+    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, notes } : t)));
+  }, []);
+
   const restoreTask = useCallback((id: string) => {
     setTasks((prev) =>
       prev.map((t) => (t.id === id ? { ...t, status: "active", doneAt: null } : t)),
@@ -139,6 +143,7 @@ export function useTaskStore() {
     beginWithSeedData,
     markDone,
     setReminder,
+    updateNotes,
     restoreTask,
     importTasks,
     addManualTask,
