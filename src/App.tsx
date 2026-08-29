@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useTaskStore } from "@/store/useTaskStore";
 import { useShakeUndo } from "@/hooks/useShakeUndo";
 import { Onboarding } from "@/components/Onboarding";
@@ -23,16 +24,22 @@ const VIEW_TITLES: Record<ViewKey, string> = {
 function App() {
   const store = useTaskStore();
   const [view, setView] = useState<ViewKey>("swipe");
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ id: number; message: string } | null>(null);
+  const toastIdRef = useRef(0);
 
   const showOnboarding = !store.hasOnboarded && store.tasks.length === 0;
+
+  const showToast = useCallback((message: string) => {
+    toastIdRef.current += 1;
+    setToast({ id: toastIdRef.current, message });
+  }, []);
 
   const handleShake = useCallback(() => {
     if (!store.lastAction) return;
     const title = store.lastAction.prevTask.title;
     store.undoLast();
-    setToast(`Brought back "${title}"`);
-  }, [store]);
+    showToast(`Brought back "${title}"`);
+  }, [store, showToast]);
 
   useShakeUndo(store.settings.shakeToUndoEnabled, handleShake);
 
@@ -66,7 +73,11 @@ function App() {
           ) : (
             <>
               {view === "swipe" && (
-                <SwipeStack store={store} onNavigateToCalendar={() => setView("calendar")} />
+                <SwipeStack
+                  store={store}
+                  onNavigateToCalendar={() => setView("calendar")}
+                  onSwipeFeedback={showToast}
+                />
               )}
               {view === "calendar" && (
                 <CalendarView tasks={store.activeTasks} onUpdateNotes={store.updateNotes} />
@@ -89,13 +100,22 @@ function App() {
 
         {!showOnboarding && <NavBar active={view} onChange={setView} />}
 
-        {toast && (
-          <div className="pointer-events-none absolute inset-x-4 top-16 z-50 flex justify-center">
-            <div className="rounded-full bg-ink px-4 py-2 text-xs font-medium text-white shadow-lg">
-              {toast}
-            </div>
-          </div>
-        )}
+        <div className="pointer-events-none absolute inset-x-4 top-16 z-50 flex justify-center">
+          <AnimatePresence>
+            {toast && (
+              <motion.div
+                key={toast.id}
+                initial={{ y: -32, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -32, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                className="rounded-full bg-ink px-4 py-2 text-xs font-medium text-white shadow-lg"
+              >
+                {toast.message}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );

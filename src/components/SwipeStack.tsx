@@ -14,9 +14,10 @@ const VISIBLE_CARDS = 3;
 interface SwipeStackProps {
   store: TaskStore;
   onNavigateToCalendar: () => void;
+  onSwipeFeedback: (message: string) => void;
 }
 
-export function SwipeStack({ store, onNavigateToCalendar }: SwipeStackProps) {
+export function SwipeStack({ store, onNavigateToCalendar, onSwipeFeedback }: SwipeStackProps) {
   const {
     activeTasks,
     tasks,
@@ -67,8 +68,11 @@ export function SwipeStack({ store, onNavigateToCalendar }: SwipeStackProps) {
     if (direction === "right") {
       recordAction(task, "done");
       markDone(task.id);
+      onSwipeFeedback("Removed from the calendar");
       return;
     }
+
+    onSwipeFeedback("Kept in calendar");
 
     // Plain "keep" swipe. With the setting on, silently apply the default
     // reminder (if one isn't already set) instead of opening the detail
