@@ -22,7 +22,7 @@ interface CalendarViewProps {
   onUpdateNotes: (id: string, notes: string) => void;
 }
 
-type CalendarMode = "month" | "day";
+type CalendarMode = "month" | "week" | "day";
 
 export function CalendarView({ tasks, onUpdateNotes }: CalendarViewProps) {
   const [cursor, setCursor] = useState(() => new Date());
@@ -52,33 +52,41 @@ export function CalendarView({ tasks, onUpdateNotes }: CalendarViewProps) {
     });
   }, [cursor]);
 
+  const weekDays = useMemo(() => {
+    const start = new Date(cursor);
+    start.setDate(cursor.getDate() - cursor.getDay());
+    return Array.from({ length: 7 }, (_, i) => {
+      const day = new Date(start);
+      day.setDate(start.getDate() + i);
+      return day;
+    });
+  }, [cursor]);
+
+  const weekLabel = `${weekDays[0].toLocaleDateString(undefined, { month: "short", day: "numeric" })} – ${weekDays[6].toLocaleDateString(undefined, { month: "short", day: "numeric" })}`;
+
   function tasksForDay(day: Date) {
     return tasksWithDueDate.filter((t) => t.dueDate && isSameDay(new Date(t.dueDate), day));
   }
 
-  function goToMonth() {
-    setMode("month");
-  }
-
-  function goToDay() {
-    setCursor(selectedDate ?? cursor);
-    setMode("day");
+  function switchMode(next: CalendarMode) {
+    if (next !== "month") setCursor(selectedDate ?? cursor);
+    setMode(next);
   }
 
   function goPrev() {
-    setCursor((prev) =>
-      mode === "month"
-        ? new Date(prev.getFullYear(), prev.getMonth() - 1, 1)
-        : new Date(prev.getFullYear(), prev.getMonth(), prev.getDate() - 1),
-    );
+    setCursor((prev) => {
+      if (mode === "month") return new Date(prev.getFullYear(), prev.getMonth() - 1, 1);
+      if (mode === "week") return new Date(prev.getFullYear(), prev.getMonth(), prev.getDate() - 7);
+      return new Date(prev.getFullYear(), prev.getMonth(), prev.getDate() - 1);
+    });
   }
 
   function goNext() {
-    setCursor((prev) =>
-      mode === "month"
-        ? new Date(prev.getFullYear(), prev.getMonth() + 1, 1)
-        : new Date(prev.getFullYear(), prev.getMonth(), prev.getDate() + 1),
-    );
+    setCursor((prev) => {
+      if (mode === "month") return new Date(prev.getFullYear(), prev.getMonth() + 1, 1);
+      if (mode === "week") return new Date(prev.getFullYear(), prev.getMonth(), prev.getDate() + 7);
+      return new Date(prev.getFullYear(), prev.getMonth(), prev.getDate() + 1);
+    });
   }
 
   const tasksToShow =
@@ -88,23 +96,32 @@ export function CalendarView({ tasks, onUpdateNotes }: CalendarViewProps) {
     <div className="flex h-full flex-col">
       <div className="mb-3 flex items-center justify-between gap-2">
         <h2 className="truncate text-lg font-bold text-ink">
-          {mode === "month" ? monthLabel : dayLabel}
+          {mode === "month" ? monthLabel : mode === "week" ? weekLabel : dayLabel}
         </h2>
         <div className="flex shrink-0 items-center gap-1">
           <div className="mr-1 flex rounded-full bg-slate-100 p-0.5 text-xs font-medium">
             <button
-              onClick={goToMonth}
+              onClick={() => switchMode("month")}
               className={cn(
-                "rounded-full px-2.5 py-1 transition-colors",
+                "rounded-full px-2 py-1 transition-colors",
                 mode === "month" ? "bg-white text-ucla-blue shadow-sm" : "text-slate-500",
               )}
             >
               Month
             </button>
             <button
-              onClick={goToDay}
+              onClick={() => switchMode("week")}
               className={cn(
-                "rounded-full px-2.5 py-1 transition-colors",
+                "rounded-full px-2 py-1 transition-colors",
+                mode === "week" ? "bg-white text-ucla-blue shadow-sm" : "text-slate-500",
+              )}
+            >
+              Week
+            </button>
+            <button
+              onClick={() => switchMode("day")}
+              className={cn(
+                "rounded-full px-2 py-1 transition-colors",
                 mode === "day" ? "bg-white text-ucla-blue shadow-sm" : "text-slate-500",
               )}
             >
@@ -120,7 +137,7 @@ export function CalendarView({ tasks, onUpdateNotes }: CalendarViewProps) {
         </div>
       </div>
 
-      {mode === "month" && (
+      {(mode === "month" || mode === "week") && (
         <>
           <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-slate-400">
             {WEEKDAY_LABELS.map((label, i) => (
@@ -129,9 +146,9 @@ export function CalendarView({ tasks, onUpdateNotes }: CalendarViewProps) {
           </div>
 
           <div className="mt-1 grid grid-cols-7 gap-1">
-            {gridDays.map((day, i) => {
+            {(mode === "month" ? gridDays : weekDays).map((day, i) => {
               const dayTasks = tasksForDay(day);
-              const inMonth = day.getMonth() === cursor.getMonth();
+              const inMonth = mode === "month" ? day.getMonth() === cursor.getMonth() : true;
               const isToday = isSameDay(day, new Date());
               const isSelected = selectedDate && isSameDay(day, selectedDate);
 

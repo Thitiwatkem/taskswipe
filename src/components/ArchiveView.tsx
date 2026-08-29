@@ -3,7 +3,7 @@ import type { Task } from "@/lib/types";
 import type { TaskCategory } from "@/lib/category";
 import { CATEGORY_META } from "@/lib/category";
 import { SourceBadge, CategoryBadge } from "@/components/ui/badge";
-import { Archive, ExternalLink, RotateCcw } from "lucide-react";
+import { Archive, ExternalLink, RotateCcw, Search } from "lucide-react";
 import { AiSummaryToggle } from "@/components/AiSummaryToggle";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +14,7 @@ interface ArchiveViewProps {
 
 export function ArchiveView({ tasks, onRestore }: ArchiveViewProps) {
   const [filter, setFilter] = useState<TaskCategory | "all">("all");
+  const [search, setSearch] = useState("");
 
   const presentCategories = useMemo(() => {
     const set = new Set<TaskCategory>();
@@ -21,10 +22,17 @@ export function ArchiveView({ tasks, onRestore }: ArchiveViewProps) {
     return Array.from(set);
   }, [tasks]);
 
-  const filteredTasks = useMemo(
-    () => (filter === "all" ? tasks : tasks.filter((t) => t.category === filter)),
-    [tasks, filter],
-  );
+  const filteredTasks = useMemo(() => {
+    let result = filter === "all" ? tasks : tasks.filter((t) => t.category === filter);
+    const query = search.trim().toLowerCase();
+    if (query) {
+      result = result.filter(
+        (t) =>
+          t.title.toLowerCase().includes(query) || t.courseOrSender.toLowerCase().includes(query),
+      );
+    }
+    return result;
+  }, [tasks, filter, search]);
 
   if (tasks.length === 0) {
     return (
@@ -38,6 +46,17 @@ export function ArchiveView({ tasks, onRestore }: ArchiveViewProps) {
   return (
     <div className="h-full overflow-y-auto no-scrollbar">
       <h2 className="mb-3 text-lg font-bold text-ink">Archive</h2>
+
+      <div className="relative mb-3">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search archived tasks…"
+          className="w-full rounded-xl border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm text-ink focus:border-ucla-blue focus:outline-none"
+        />
+      </div>
 
       {presentCategories.length > 1 && (
         <div className="mb-3 flex flex-wrap gap-1.5">
@@ -55,7 +74,7 @@ export function ArchiveView({ tasks, onRestore }: ArchiveViewProps) {
 
       {filteredTasks.length === 0 ? (
         <p className="py-8 text-center text-sm text-slate-400">
-          No archived tasks in this category.
+          {search.trim() ? "No archived tasks match your search." : "No archived tasks in this category."}
         </p>
       ) : (
         <div className="space-y-2 pb-4">
