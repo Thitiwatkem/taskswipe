@@ -9,6 +9,7 @@ import { SettingsView } from "@/components/SettingsView";
 import { ImportView } from "@/components/ImportView";
 import { NavBar, type ViewKey } from "@/components/NavBar";
 import { NotificationBell } from "@/components/NotificationBell";
+import { DoneCounter } from "@/components/DoneCounter";
 import { Layers } from "lucide-react";
 
 const VIEW_TITLES: Record<ViewKey, string> = {
@@ -51,7 +52,12 @@ function App() {
             </div>
             <span className="text-base font-bold text-ink">{VIEW_TITLES[view]}</span>
           </div>
-          {!showOnboarding && <NotificationBell tasks={store.activeTasks} />}
+          {!showOnboarding && (
+            <div className="flex items-center gap-2">
+              <DoneCounter count={store.doneTasks.length} />
+              <NotificationBell tasks={store.activeTasks} />
+            </div>
+          )}
         </header>
 
         <main className="min-h-0 flex-1 p-5">
