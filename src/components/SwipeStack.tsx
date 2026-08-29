@@ -32,6 +32,7 @@ export function SwipeStack({ store, onNavigateToCalendar, onSwipeFeedback }: Swi
   const [triagedIds, setTriagedIds] = useState<Set<string>>(new Set());
   const [detailTaskId, setDetailTaskId] = useState<string | null>(null);
   const topCardRef = useRef<TaskCardHandle>(null);
+  const doneStreakRef = useRef(0);
 
   // A shake gesture undid the last swipe — bring that card back into the
   // queue instead of leaving it triaged out.
@@ -68,10 +69,16 @@ export function SwipeStack({ store, onNavigateToCalendar, onSwipeFeedback }: Swi
     if (direction === "right") {
       recordAction(task, "done");
       markDone(task.id);
-      onSwipeFeedback("Removed from the calendar");
+      doneStreakRef.current += 1;
+      onSwipeFeedback(
+        doneStreakRef.current >= 3
+          ? `🔥 Hot streak! ${doneStreakRef.current} in a row`
+          : "Removed from the calendar",
+      );
       return;
     }
 
+    doneStreakRef.current = 0;
     onSwipeFeedback("Kept in calendar");
 
     // Plain "keep" swipe. With the setting on, silently apply the default
